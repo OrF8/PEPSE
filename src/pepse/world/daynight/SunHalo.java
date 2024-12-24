@@ -6,13 +6,24 @@ import danogl.gui.rendering.OvalRenderable;
 
 import java.awt.Color;
 
-/**TODO: docs */
+/**
+ * This class is responsible for creating the sun halo.
+ * <p>
+ *     The sun halo is a yellow halo around the sun.
+ *     The halo is created as an oval game object that follows the sun.
+ * </p>
+ */
 public class SunHalo {
 
     private static final Color BASIC_HALO_COLOR = new Color(255, 255, 0, 20);
     private static final String SUN_HALO_TAG = "sunHalo";
-    public static final int SUN_HALO_FACTOR = 2;
+    private static final int SUN_HALO_FACTOR = 2;
 
+    /**
+     * Creates a sun halo game object.
+     * @param sun The sun game object.
+     * @return The sun halo game object.
+     */
     public static GameObject create(GameObject sun) {
         GameObject sunHalo = new GameObject(
                 sun.getTopLeftCorner(), sun.getDimensions().mult(SUN_HALO_FACTOR),
@@ -22,7 +33,7 @@ public class SunHalo {
 
         // Make the halo follow the sun rotation
         sunHalo.addComponent(
-                deltaTime -> sunHalo.setCenter(sun.getCenter())
+                _ -> sunHalo.setCenter(sun.getCenter())
         );
         return sunHalo;
     }
