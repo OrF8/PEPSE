@@ -14,6 +14,7 @@ import pepse.world.Terrain;
 import pepse.world.Block;
 import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
+import pepse.world.daynight.SunHalo;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ import java.util.List;
 public class PepseGameManager extends GameManager {
 
     private static final int SECONDS_IN_A_DAY_CYCLE = 30;
+    private static final int HALO_LAYER_VALUE = -150; // Sun layer is -100, set halo in front of it
 
     /**
      * Initializes the game objects.
@@ -56,6 +58,10 @@ public class PepseGameManager extends GameManager {
         // create sun
         GameObject sun = Sun.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE);
         gameObjects().addGameObject(sun, Layer.BACKGROUND);
+
+        // create sun halo
+        GameObject sunHalo = SunHalo.create(sun);
+        gameObjects().addGameObject(sunHalo, HALO_LAYER_VALUE);
     }
 
     /**
