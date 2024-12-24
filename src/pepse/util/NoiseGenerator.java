@@ -57,9 +57,6 @@ public class NoiseGenerator {
 		return value*factor / startPoint;
 	}
 
-
-
-
 	private double smoothNoise(double x, double y, double z) {
 		// Offset each coordinate by the seed value
 		x += this.seed;
