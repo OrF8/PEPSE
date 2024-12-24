@@ -13,6 +13,7 @@ import pepse.world.Sky;
 import pepse.world.Terrain;
 import pepse.world.Block;
 import pepse.world.daynight.Night;
+import pepse.world.daynight.Sun;
 
 import java.util.List;
 
@@ -41,14 +42,20 @@ public class PepseGameManager extends GameManager {
         GameObject sky = Sky.create(windowDimensions); // create sky
         gameObjects().addGameObject(sky, Layer.BACKGROUND); // add sky to the background layer
 
+        // create terrain
         Terrain terrain = new Terrain(windowDimensions, 10);
         List<Block> blockList = terrain.createInRange(0, (int) windowDimensions.x());
         for (Block block : blockList) {
             gameObjects().addGameObject(block, Layer.STATIC_OBJECTS);
         }
 
+        // create night
         GameObject night = Night.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE);
         gameObjects().addGameObject(night, Layer.FOREGROUND); // TODO: Verify layer later
+
+        // create sun
+        GameObject sun = Sun.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE);
+        gameObjects().addGameObject(sun, Layer.BACKGROUND);
     }
 
     /**
