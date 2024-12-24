@@ -33,7 +33,7 @@ public class SunHalo {
 
         // Make the halo follow the sun rotation
         sunHalo.addComponent(
-                _ -> sunHalo.setCenter(sun.getCenter())
+                deltaTime -> sunHalo.setCenter(sun.getCenter())
         );
         return sunHalo;
     }
