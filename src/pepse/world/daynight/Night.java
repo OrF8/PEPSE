@@ -23,9 +23,10 @@ public class Night {
                 windowDimensions,
                 new RectangleRenderable(Color.black)
         );
-        night.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
-        night.setTag(NIGHT);
+        night.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES); // force the night to follow camera
+        night.setTag(NIGHT); // set "night" tag
 
+        // Set up a transition to cycle day and night
         new Transition<Float>(
                 night,
                 night.renderer()::setOpaqueness,
