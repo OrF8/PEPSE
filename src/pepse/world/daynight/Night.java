@@ -16,6 +16,7 @@ public class Night {
     private static final float MIDNIGHT_OPACITY = 0.5f;
     private static final float DAY_OPACITY = 0;
     private static final String NIGHT = "night";
+    private static final float HALF_FACTOR = 0.5f;
 
     /**
      * Creates a night object that cycles between day and night.
@@ -40,7 +41,7 @@ public class Night {
                 DAY_OPACITY,
                 MIDNIGHT_OPACITY,
                 Transition.CUBIC_INTERPOLATOR_FLOAT,
-                cycleLength,
+                cycleLength * HALF_FACTOR,
                 Transition.TransitionType.TRANSITION_BACK_AND_FORTH,
                 null
         );
