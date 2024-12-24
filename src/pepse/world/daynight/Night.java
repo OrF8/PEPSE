@@ -6,28 +6,35 @@ import danogl.components.Transition;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.util.Vector2;
 
-import java.awt.*;
-import java.util.concurrent.CyclicBarrier;
+import java.awt.Color;
 
-/** TODO: Docs */
+/**
+ * TODO: Docs
+ */
 public class Night {
 
     private static final float MIDNIGHT_OPACITY = 0.5f;
     private static final float DAY_OPACITY = 0;
     private static final String NIGHT = "night";
 
-    /** TODO: Docs */
+    /**
+     * Creates a night object that cycles between day and night.
+     * @param windowDimensions The dimensions of the window.
+     * @param cycleLength The length of the cycle in seconds.
+     * @return The night object.
+     */
     public static GameObject create(Vector2 windowDimensions, float cycleLength) {
         GameObject night = new GameObject(
                 Vector2.ZERO,
                 windowDimensions,
                 new RectangleRenderable(Color.black)
         );
-        night.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES); // force the night to follow camera
+
+        night.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES); // force the night to follow the camera
         night.setTag(NIGHT); // set "night" tag
 
         // Set up a transition to cycle day and night
-        new Transition<Float>(
+        new Transition<>(
                 night,
                 night.renderer()::setOpaqueness,
                 DAY_OPACITY,
