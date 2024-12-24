@@ -9,6 +9,7 @@ import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
 
 import danogl.util.Vector2;
+import pepse.world.Avatar;
 import pepse.world.Sky;
 import pepse.world.Terrain;
 import pepse.world.Block;
@@ -40,7 +41,11 @@ public class PepseGameManager extends GameManager {
      * Initializes the game objects.
      * @param windowDimensions The dimensions of the game window.
      */
-    private void initGameObjects(Vector2 windowDimensions) {
+    private void initGameObjects(
+            Vector2 windowDimensions,
+            UserInputListener inputListener,
+            ImageReader imageReader
+    ) {
         GameObject sky = Sky.create(windowDimensions); // create sky
         gameObjects().addGameObject(sky, Layer.BACKGROUND); // add sky to the background layer
 
@@ -62,6 +67,16 @@ public class PepseGameManager extends GameManager {
         // create sun halo
         GameObject sunHalo = SunHalo.create(sun);
         gameObjects().addGameObject(sunHalo, HALO_LAYER_VALUE);
+
+        // create Avatar
+        float avatarXPosition = windowDimensions.x() / 2;
+        float avatarYPosition = terrain.groundHeightAtX0(avatarXPosition);
+        GameObject avatar = new Avatar(
+                Vector2.of(avatarXPosition, avatarYPosition),
+                inputListener,
+                imageReader
+        );
+        gameObjects().addGameObject(avatar, Layer.DEFAULT);
     }
 
     /**
@@ -80,7 +95,7 @@ public class PepseGameManager extends GameManager {
             WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
 
-        initGameObjects(windowController.getWindowDimensions());
+        initGameObjects(windowController.getWindowDimensions(), inputListener, imageReader);
     }
 
     /**
