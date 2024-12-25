@@ -134,7 +134,13 @@ public class Avatar extends GameObject {
         handleJump(isPressingJump);
 
         handleEnergyRegeneration(isIdle);
+    }
 
-        System.out.println(Math.round(energy)); // TODO: get rid of that when there's numeric value on screen
+    /**
+     * Returns the energy value of the avatar.
+     * @return The energy value of the avatar.
+     */
+    public double getEnergy() {
+        return energy;
     }
 }
