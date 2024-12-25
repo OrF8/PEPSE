@@ -41,8 +41,8 @@ public class PepseGameManager extends GameManager {
     private static final float AVATAR_X_POS_RATIO = 2;
     private static final String INITIAL_ENERGY_STRING = "100%";
     private static final String PERCENT = "%";
-    private static final Vector2 ENERGY_DISPLAY_TOP_LEFT_CORNER = Vector2.of(0, -20);
-    private static final Vector2 ENERGY_DISPLAY_DIMENSIONS = Vector2.of(75, 75);
+    private static final Vector2 ENERGY_DISPLAY_TOP_LEFT_CORNER = Vector2.of(10, 20);
+    private static final Vector2 ENERGY_DISPLAY_DIMENSIONS = Vector2.of(50, 50);
 
     /**
      * Initializes the game objects.
@@ -75,11 +75,6 @@ public class PepseGameManager extends GameManager {
         GameObject sunHalo = SunHalo.create(sun);
         gameObjects().addGameObject(sunHalo, HALO_LAYER_VALUE);
 
-        TextRenderable energyTextRenderable = new TextRenderable(INITIAL_ENERGY_STRING);
-        GameObject energyDisplay = new GameObject(
-                ENERGY_DISPLAY_TOP_LEFT_CORNER, ENERGY_DISPLAY_DIMENSIONS, energyTextRenderable
-        );
-        gameObjects().addGameObject(energyDisplay, Layer.UI);
 
         // create Avatar
         float avatarXPosition = windowDimensions.x() / AVATAR_X_POS_RATIO;
@@ -91,6 +86,12 @@ public class PepseGameManager extends GameManager {
         );
         gameObjects().addGameObject(avatar, Layer.DEFAULT);
 
+        // Handle numeric energy count display
+        TextRenderable energyTextRenderable = new TextRenderable(INITIAL_ENERGY_STRING);
+        GameObject energyDisplay = new GameObject(
+                ENERGY_DISPLAY_TOP_LEFT_CORNER, ENERGY_DISPLAY_DIMENSIONS, energyTextRenderable
+        );
+        gameObjects().addGameObject(energyDisplay, Layer.UI);
         energyDisplay.addComponent(
                 deltaTime -> energyTextRenderable.setString(Math.round(avatar.getEnergy()) + PERCENT)
         );
@@ -121,5 +122,6 @@ public class PepseGameManager extends GameManager {
      */
     public static void main(String[] args) {
         new PepseGameManager().run();
+        // TODO: Check position of numeric energy (size, location on screen)
     }
 }
