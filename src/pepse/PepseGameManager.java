@@ -70,7 +70,7 @@ public class PepseGameManager extends GameManager {
 
         // create Avatar
         float avatarXPosition = windowDimensions.x() / 2;
-        float avatarYPosition = terrain.groundHeightAtX0(avatarXPosition);
+        float avatarYPosition = terrain.groundHeightAtX0(avatarXPosition) - 100; // TODO: Check later
         GameObject avatar = new Avatar(
                 Vector2.of(avatarXPosition, avatarYPosition),
                 inputListener,
