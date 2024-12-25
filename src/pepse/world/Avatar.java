@@ -2,6 +2,7 @@ package pepse.world;
 
 import danogl.GameObject;
 import danogl.collisions.Collision;
+import danogl.components.Component;
 import danogl.gui.ImageReader;
 import danogl.gui.UserInputListener;
 import danogl.gui.rendering.AnimationRenderable;
@@ -9,6 +10,8 @@ import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The avatar class represents the player's character in the game.
@@ -50,6 +53,7 @@ public class Avatar extends GameObject {
     private AnimationRenderable idleAnimationRenderable;
     private AnimationRenderable runAnimationRenderable;
     private AnimationRenderable jumpAnimationRenderable;
+    private List<Component> onJumpComponents;
 
     /**
      * Constructor for the Avatar class.
@@ -66,6 +70,8 @@ public class Avatar extends GameObject {
 
         createAnimationRenderables(imageReader); // create animation renderables for all 3 states
         this.renderer().setRenderable(idleAnimationRenderable); // set starting animation to idle
+
+        this.onJumpComponents = new ArrayList<>();
     }
 
     /**
@@ -182,7 +188,31 @@ public class Avatar extends GameObject {
             transform().setVelocityY(VELOCITY_Y);
             energy -= JUMP_ENERGY_CONSUMPTION;
             this.renderer().setRenderable(jumpAnimationRenderable);
+
+            for (Component component : onJumpComponents) { // Upon jump, activate all jump components
+                component.update(0);
+            }
         }
+    }
+
+    /**
+     * Adds the specified component to the list of components that are activated when the avatar jumps.
+     *
+     * @param component The component to be added to the on-jump components list.
+     * @return True if the component was successfully added, false otherwise.
+     */
+    public boolean addOnJumpComponent(Component component) {
+        return onJumpComponents.add(component);
+    }
+
+    /**
+     * Removes the specified component from the list of components activated when the avatar jumps.
+     *
+     * @param component The component to be removed from the list of on-jump components.
+     * @return True if the component was successfully removed from the list, false otherwise.
+     */
+    public boolean removeOnJumpComponent(Component component) {
+        return onJumpComponents.remove(component);
     }
 
     /**
