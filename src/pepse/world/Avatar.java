@@ -254,6 +254,13 @@ public class Avatar extends GameObject {
         this.energy = Math.min(MAX_ENERGY_VALUE, this.energy + energyAmountToAdd);
     }
 
+    /**
+     * Override the onCollisionEnter method to prevent the avatar from falling through the terrain.
+     * @param other The other GameObject involved in the collision.
+     * @param collision The collision object that contains information about the collision.
+     *
+     * @see Terrain#BLOCK_TAG
+     */
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);
