@@ -64,7 +64,7 @@ public class Avatar extends GameObject {
      *          the energy value increases by 1 point.
      *      </li>
      * </p>
-     * @param deltaTime
+     * @param deltaTime The time since the last update.
      */
     @Override
     public void update(float deltaTime) {
