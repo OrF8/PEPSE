@@ -44,39 +44,60 @@ public class PepseGameManager extends GameManager {
     private static final Vector2 ENERGY_DISPLAY_TOP_LEFT_CORNER = Vector2.of(10, 20);
     private static final Vector2 ENERGY_DISPLAY_DIMENSIONS = Vector2.of(50, 50);
 
+    private Terrain terrain;
+    private Avatar avatar;
+
     /**
-     * Initializes the game objects.
+     * Creates the sky.
      * @param windowDimensions The dimensions of the game window.
      */
-    private void initGameObjects(
-            Vector2 windowDimensions,
-            UserInputListener inputListener,
-            ImageReader imageReader
-    ) {
+    private void createSky(Vector2 windowDimensions) {
         GameObject sky = Sky.create(windowDimensions); // create sky
         gameObjects().addGameObject(sky, Layer.BACKGROUND); // add sky to the background layer
+    }
 
-        // create terrain
+    /**
+     * Creates the terrain.
+     * @param windowDimensions The dimensions of the game window.
+     */
+    private void createTerrain(Vector2 windowDimensions) {
         Terrain terrain = new Terrain(windowDimensions, 10);
         List<Block> blockList = terrain.createInRange(0, (int) windowDimensions.x());
         for (Block block : blockList) {
             gameObjects().addGameObject(block, Layer.STATIC_OBJECTS);
         }
+        this.terrain = terrain;
+    }
 
-        // create night
+    /**
+     * Creates the night.
+     * @param windowDimensions The dimensions of the game window.
+     */
+    private void createNight(Vector2 windowDimensions) {
         GameObject night = Night.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE);
         gameObjects().addGameObject(night, Layer.FOREGROUND); // TODO: Verify layer later
+    }
 
-        // create sun
+    /**
+     * Creates the sun and its halo.
+     * @param windowDimensions The dimensions of the game window.
+     */
+    private void createSunAndHalo(Vector2 windowDimensions) {
         GameObject sun = Sun.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE);
         gameObjects().addGameObject(sun, Layer.BACKGROUND);
-
-        // create sun halo
         GameObject sunHalo = SunHalo.create(sun);
         gameObjects().addGameObject(sunHalo, HALO_LAYER_VALUE);
+    }
 
-
-        // create Avatar
+    /**
+     * Creates the avatar.
+     * @param windowDimensions The dimensions of the game window.
+     * @param inputListener The input listener to use for getting user input.
+     * @param imageReader The image reader to use for loading images.
+     */
+    private void createAvatar(
+            Vector2 windowDimensions, UserInputListener inputListener, ImageReader imageReader
+    ) {
         float avatarXPosition = windowDimensions.x() / AVATAR_X_POS_RATIO;
         float avatarYPosition = terrain.groundHeightAtX0(avatarXPosition) - AVATAR_Y_POS_OFFSET; // TODO: Check later
         Avatar avatar = new Avatar(
@@ -85,7 +106,13 @@ public class PepseGameManager extends GameManager {
                 imageReader
         );
         gameObjects().addGameObject(avatar, Layer.DEFAULT);
+        this.avatar = avatar;
+    }
 
+    /**
+     * Creates the energy display.
+     */
+    private void createEnergyDisplay() {
         // Handle numeric energy count display
         TextRenderable energyTextRenderable = new TextRenderable(INITIAL_ENERGY_STRING);
         GameObject energyDisplay = new GameObject(
@@ -98,12 +125,38 @@ public class PepseGameManager extends GameManager {
     }
 
     /**
+     * Initializes the game objects.
+     * @param windowDimensions The dimensions of the game window.
+     *
+     * @see #createSky(Vector2)
+     * @see #createTerrain(Vector2)
+     * @see #createNight(Vector2)
+     * @see #createSunAndHalo(Vector2)
+     * @see #createAvatar(Vector2, UserInputListener, ImageReader)
+     * @see #createEnergyDisplay()
+     */
+    private void initGameObjects(
+            Vector2 windowDimensions,
+            UserInputListener inputListener,
+            ImageReader imageReader
+    ) {
+        createSky(windowDimensions); // create sky
+        createTerrain(windowDimensions); // create terrain
+        createNight(windowDimensions); // create night
+        createSunAndHalo(windowDimensions); // create sun and halo
+        createAvatar(windowDimensions, inputListener, imageReader); // create avatar
+        createEnergyDisplay(); // create energy display
+    }
+
+    /**
      * Initializes the game.
      * @param imageReader The image reader to use for loading images.
      * @param soundReader The sound reader to use for loading sounds.
      * @param inputListener The input listener to use for getting user input.
      * @param windowController The window controller to use for creating the game window.
      *                         The window controller is also used for getting the window dimensions.
+     *
+     * @see #initGameObjects(Vector2, UserInputListener, ImageReader)
      */
     @Override
     public void initializeGame(
