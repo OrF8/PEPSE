@@ -53,7 +53,7 @@ public class Avatar extends GameObject {
     private AnimationRenderable idleAnimationRenderable;
     private AnimationRenderable runAnimationRenderable;
     private AnimationRenderable jumpAnimationRenderable;
-    private List<Component> onJumpComponents;
+    private final List<Component> onJumpComponents;
 
     /**
      * Constructor for the Avatar class.
@@ -227,6 +227,22 @@ public class Avatar extends GameObject {
     }
 
     /**
+     * Returns the energy value of the avatar.
+     * @return The energy value of the avatar.
+     */
+    public double getEnergy() {
+        return energy;
+    }
+
+    /**
+     * Add a given amount of energy to the Avatar's energy, as long as it is within the max boundary.
+     * @param energyAmountToAdd The amount of energy to add.
+     */
+    public void addEnergy(double energyAmountToAdd) {
+        this.energy = Math.min(MAX_ENERGY_VALUE, this.energy + energyAmountToAdd);
+    }
+
+    /**
      * Updates the avatar's position and energy value.
      * <p>
      *     The avatar's position is updated based on the user's input.
@@ -266,22 +282,6 @@ public class Avatar extends GameObject {
         handleJump(isPressingJump);
 
         handleEnergyRegeneration(isIdle);
-    }
-
-    /**
-     * Returns the energy value of the avatar.
-     * @return The energy value of the avatar.
-     */
-    public double getEnergy() {
-        return energy;
-    }
-
-    /**
-     * Add a given amount of energy to the Avatar's energy, as long as it is within the max boundary.
-     * @param energyAmountToAdd The amount of energy to add.
-     */
-    public void addEnergy(double energyAmountToAdd) {
-        this.energy = Math.min(MAX_ENERGY_VALUE, this.energy + energyAmountToAdd);
     }
 
     /**
