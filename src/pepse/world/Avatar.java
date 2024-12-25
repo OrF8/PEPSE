@@ -3,6 +3,8 @@ package pepse.world;
 import danogl.GameObject;
 import danogl.gui.ImageReader;
 import danogl.gui.UserInputListener;
+import danogl.gui.rendering.AnimationRenderable;
+import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
 
 import java.awt.event.KeyEvent;
@@ -11,19 +13,42 @@ import java.awt.event.KeyEvent;
  * The avatar class represents the player's character in the game.
  */
 public class Avatar extends GameObject {
+
+    private static final int MAX_ENERGY_VALUE = 100;
+    private static final int MIN_ENERGY_VALUE = 0; // TODO: Do we need min value?
+    private static final int JUMP_ENERGY_CONSUMPTION = 10;
+    private static final int IDLE_ENERGY_REGENERATION_RATE = 1;
+    private static final int AVATAR_SIZE = 50;
     private static final float VELOCITY_X = 400;
     private static final float VELOCITY_Y = -650;
     private static final float GRAVITY = 600;
-    private static final int MAX_ENERGY_VALUE = 100;
-    private static final int MIN_ENERGY_VALUE = 0; // TODO: Do we need min value?
+    private static final float TIME_BETWEEN_JUMP_IDLE_CLIPS = 0.35f;
+    private static final float TIME_BETWEEN_RUN_CLIPS = 0.15f;
     private static final double HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION = 0.5;
-    private static final int JUMP_ENERGY_CONSUMPTION = 10;
-    private static final int IDLE_ENERGY_REGENERATION_RATE = 1;
     private static final String AVATAR_TAG = "avatar";
-    private static final int AVATAR_SIZE = 50;
 
+    // Paths to animations
+    private static final String IDLE_0_ANIMATION_PATH = "assets\\idle_0.png";
+    private static final String IDLE_1_ANIMATION_PATH = "assets\\idle_1.png";
+    private static final String IDLE_2_ANIMATION_PATH = "assets\\idle_2.png";
+    private static final String IDLE_3_ANIMATION_PATH = "assets\\idle_3.png";
+    private static final String JUMP_0_ANIMATION_PATH = "assets\\jump_0.png";
+    private static final String JUMP_1_ANIMATION_PATH = "assets\\jump_1.png";
+    private static final String JUMP_2_ANIMATION_PATH = "assets\\jump_2.png";
+    private static final String JUMP_3_ANIMATION_PATH = "assets\\jump_3.png";
+    private static final String RUN_0_ANIMATION_PATH = "assets\\run_0.png";
+    private static final String RUN_1_ANIMATION_PATH = "assets\\run_1.png";
+    private static final String RUN_2_ANIMATION_PATH = "assets\\run_2.png";
+    private static final String RUN_3_ANIMATION_PATH = "assets\\run_3.png";
+    private static final String RUN_4_ANIMATION_PATH = "assets\\run_4.png";
+    private static final String RUN_5_ANIMATION_PATH = "assets\\run_5.png";
+
+    // private fields
     private final UserInputListener inputListener;
     private double energy = MAX_ENERGY_VALUE;
+    private AnimationRenderable idleAnimationRenderable;
+    private AnimationRenderable runAnimationRenderable;
+    private AnimationRenderable jumpAnimationRenderable;
 
     /**
      * Constructor for the Avatar class.
@@ -32,16 +57,84 @@ public class Avatar extends GameObject {
      * @param imageReader The image reader for the avatar.
      */
     public Avatar(Vector2 topLeftCorner, UserInputListener inputListener, ImageReader imageReader) {
-        super(
-                topLeftCorner,
-                Vector2.ONES.mult(AVATAR_SIZE),
-                imageReader.readImage("assets\\idle_0.png", false)
-        );
+        super(topLeftCorner, Vector2.ONES.mult(AVATAR_SIZE), null);
         physics().preventIntersectionsFromDirection(Vector2.ZERO);
         transform().setAccelerationY(GRAVITY);
         this.inputListener = inputListener;
         this.setTag(AVATAR_TAG);
+
+        createAnimationRenderables(imageReader); // create animation renderables for all 3 states
+        this.renderer().setRenderable(idleAnimationRenderable); // set starting animation to idle
     }
+
+    /**
+     * Creates the idle animation for the avatar using a series of images.
+     * This method reads image files for each frame of the idle animation,
+     * combines them into an AnimationRenderable object, and sets it as the
+     * avatar's idle animation.
+     *
+     * @param imageReader The ImageReader instance used to load images for the idle animation.
+     */
+    private void createIdleAnimation(ImageReader imageReader) {
+        Renderable[] clips = {
+                imageReader.readImage(IDLE_0_ANIMATION_PATH, false),
+                imageReader.readImage(IDLE_1_ANIMATION_PATH, false),
+                imageReader.readImage(IDLE_2_ANIMATION_PATH, false),
+                imageReader.readImage(IDLE_3_ANIMATION_PATH, false)
+        };
+        this.idleAnimationRenderable = new AnimationRenderable(clips, TIME_BETWEEN_RUN_CLIPS);
+    }
+
+    /**
+     * Creates the jump animation for the avatar using a series of images.
+     * This method reads image files for each frame of the jump animation,
+     * combines them into an AnimationRenderable object, and sets it as the
+     * avatar's jump animation.
+     *
+     * @param imageReader The ImageReader instance used to load images for the jump animation.
+     */
+    private void createJumpAnimation(ImageReader imageReader) {
+        Renderable[] clips = {
+                imageReader.readImage(JUMP_0_ANIMATION_PATH, false),
+                imageReader.readImage(JUMP_1_ANIMATION_PATH, false),
+                imageReader.readImage(JUMP_2_ANIMATION_PATH, false),
+                imageReader.readImage(JUMP_3_ANIMATION_PATH, false)
+        };
+        this.jumpAnimationRenderable = new AnimationRenderable(clips, TIME_BETWEEN_JUMP_IDLE_CLIPS);
+    }
+
+    /**
+     * Creates the run animation for the avatar using a series of images.
+     * This method reads image files for each frame of the run animation,
+     * combines them into an AnimationRenderable object, and sets it as the
+     * avatar's run animation.
+     *
+     * @param imageReader The ImageReader instance used to load images for the run animation.
+     */
+    private void createRunAnimation(ImageReader imageReader) {
+        Renderable[] clips = {
+                imageReader.readImage(RUN_0_ANIMATION_PATH, false),
+                imageReader.readImage(RUN_1_ANIMATION_PATH, false),
+                imageReader.readImage(RUN_2_ANIMATION_PATH, false),
+                imageReader.readImage(RUN_3_ANIMATION_PATH, false),
+                imageReader.readImage(RUN_4_ANIMATION_PATH, false),
+                imageReader.readImage(RUN_5_ANIMATION_PATH, false)
+        };
+        this.runAnimationRenderable = new AnimationRenderable(clips, TIME_BETWEEN_JUMP_IDLE_CLIPS);
+    }
+
+    /**
+     * Creates the renderables for avatar animations, including idle, jump, and run animations.
+     *
+     * @param imageReader The ImageReader instance used to load images for the animations.
+     */
+    private void createAnimationRenderables(ImageReader imageReader) {
+        createIdleAnimation(imageReader);
+        createJumpAnimation(imageReader);
+        createRunAnimation(imageReader);
+    }
+
+
 
     /**
      * Returns true if the avatar is idle, false otherwise.
@@ -65,10 +158,14 @@ public class Avatar extends GameObject {
         if (isPressingLeft && !isPressingRight && energy >= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION) {
             xVel -= VELOCITY_X;
             energy -= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION;
+            this.renderer().setIsFlippedHorizontally(true);
+            this.renderer().setRenderable(runAnimationRenderable);
         }
         if (isPressingRight && !isPressingLeft && energy >= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION) {
             xVel += VELOCITY_X;
             energy -= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION;
+            this.renderer().setIsFlippedHorizontally(false);
+            this.renderer().setRenderable(runAnimationRenderable);
         }
         return xVel;
     }
@@ -81,6 +178,7 @@ public class Avatar extends GameObject {
         if (isPressingJump && getVelocity().y() == 0 && energy >= JUMP_ENERGY_CONSUMPTION) {
             transform().setVelocityY(VELOCITY_Y);
             energy -= JUMP_ENERGY_CONSUMPTION;
+            this.renderer().setRenderable(jumpAnimationRenderable);
         }
     }
 
@@ -91,6 +189,7 @@ public class Avatar extends GameObject {
     private void handleEnergyRegeneration(boolean isIdle) {
         if (isIdle && energy <= MAX_ENERGY_VALUE - IDLE_ENERGY_REGENERATION_RATE) {
             energy += IDLE_ENERGY_REGENERATION_RATE;
+            this.renderer().setRenderable(idleAnimationRenderable);
         }
     }
 
@@ -142,5 +241,13 @@ public class Avatar extends GameObject {
      */
     public double getEnergy() {
         return energy;
+    }
+
+    /**
+     * Add a given amount of energy to the Avatar's energy, as long as it is within the max boundary.
+     * @param energyAmountToAdd The amount of energy to add.
+     */
+    public void addEnergy(double energyAmountToAdd) {
+        this.energy = Math.min(MAX_ENERGY_VALUE, this.energy + energyAmountToAdd);
     }
 }
