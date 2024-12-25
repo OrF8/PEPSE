@@ -8,6 +8,7 @@ import danogl.gui.SoundReader;
 import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
 
+import danogl.gui.rendering.TextRenderable;
 import danogl.util.Vector2;
 import pepse.world.Avatar;
 import pepse.world.Sky;
@@ -36,6 +37,12 @@ public class PepseGameManager extends GameManager {
 
     private static final int SECONDS_IN_A_DAY_CYCLE = 30;
     private static final int HALO_LAYER_VALUE = -150; // Sun layer is -100, set halo in front of it
+    private static final float AVATAR_Y_POS_OFFSET = 100;
+    private static final float AVATAR_X_POS_RATIO = 2;
+    private static final String INITIAL_ENERGY_STRING = "100%";
+    private static final String PERCENT = "%";
+    private static final Vector2 ENERGY_DISPLAY_TOP_LEFT_CORNER = Vector2.of(0, -20);
+    private static final Vector2 ENERGY_DISPLAY_DIMENSIONS = Vector2.of(75, 75);
 
     /**
      * Initializes the game objects.
@@ -68,15 +75,25 @@ public class PepseGameManager extends GameManager {
         GameObject sunHalo = SunHalo.create(sun);
         gameObjects().addGameObject(sunHalo, HALO_LAYER_VALUE);
 
+        TextRenderable energyTextRenderable = new TextRenderable(INITIAL_ENERGY_STRING);
+        GameObject energyDisplay = new GameObject(
+                ENERGY_DISPLAY_TOP_LEFT_CORNER, ENERGY_DISPLAY_DIMENSIONS, energyTextRenderable
+        );
+        gameObjects().addGameObject(energyDisplay, Layer.UI);
+
         // create Avatar
-        float avatarXPosition = windowDimensions.x() / 2;
-        float avatarYPosition = terrain.groundHeightAtX0(avatarXPosition) - 100; // TODO: Check later
-        GameObject avatar = new Avatar(
+        float avatarXPosition = windowDimensions.x() / AVATAR_X_POS_RATIO;
+        float avatarYPosition = terrain.groundHeightAtX0(avatarXPosition) - AVATAR_Y_POS_OFFSET; // TODO: Check later
+        Avatar avatar = new Avatar(
                 Vector2.of(avatarXPosition, avatarYPosition),
                 inputListener,
                 imageReader
         );
         gameObjects().addGameObject(avatar, Layer.DEFAULT);
+
+        energyDisplay.addComponent(
+                deltaTime -> energyTextRenderable.setString(Math.round(avatar.getEnergy()) + PERCENT)
+        );
     }
 
     /**
