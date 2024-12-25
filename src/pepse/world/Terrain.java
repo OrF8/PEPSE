@@ -20,10 +20,15 @@ import java.util.List;
  */
 public class Terrain {
 
+    /**
+     * A constant string that represents the tag of a terrain block.
+     * Used to identify all ground-related elements within the game world.
+     */
+    public static final String BLOCK_TAG = "ground";
+
     private static final Color BASE_BACKGROUND_COLOR = new Color(212, 123, 74); // block color
     private static final float TWO_THIRDS_FACTOR = 2 / 3f;
     private final float groundHeightAtX0; // TODO: Is it supposed to be final?
-    private static final String BLOCK_TAG = "ground";
     private static final int TERRAIN_DEPTH = 20;
 
     /**

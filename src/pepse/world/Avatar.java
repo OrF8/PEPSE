@@ -1,6 +1,7 @@
 package pepse.world;
 
 import danogl.GameObject;
+import danogl.collisions.Collision;
 import danogl.gui.ImageReader;
 import danogl.gui.UserInputListener;
 import danogl.gui.rendering.AnimationRenderable;
@@ -145,8 +146,8 @@ public class Avatar extends GameObject {
      */
     private boolean isIdle(boolean isPressingLeft, boolean isPressingRight, boolean isPressingJump) {
         return (this.getVelocity().isZero() && !isPressingLeft && !isPressingRight && !isPressingJump) ||
-               (this.getVelocity().isZero() && isPressingLeft && isPressingRight && !isPressingJump) ||
-               (this.energy == 0);
+               (this.getVelocity().isZero() && isPressingLeft && isPressingRight && !isPressingJump);
+        // TODO: After they answer in the forum, check if pressing left and right should move character to idle animation and regenerate energy
     }
 
     /**
@@ -251,5 +252,13 @@ public class Avatar extends GameObject {
      */
     public void addEnergy(double energyAmountToAdd) {
         this.energy = Math.min(MAX_ENERGY_VALUE, this.energy + energyAmountToAdd);
+    }
+
+    @Override
+    public void onCollisionEnter(GameObject other, Collision collision) {
+        super.onCollisionEnter(other, collision);
+        if (other.getTag().equals(Terrain.BLOCK_TAG)) {
+           this.transform().setVelocityY(0);
+        }
     }
 }
