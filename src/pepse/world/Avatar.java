@@ -144,7 +144,8 @@ public class Avatar extends GameObject {
      * @return True if the avatar is idle, false otherwise.
      */
     private boolean isIdle(boolean isPressingLeft, boolean isPressingRight, boolean isPressingJump) {
-        return this.getVelocity().isZero() && !isPressingLeft && !isPressingRight && !isPressingJump;
+        return (this.getVelocity().isZero() && !isPressingLeft && !isPressingRight && !isPressingJump) ||
+               (this.getVelocity().isZero() && isPressingLeft && isPressingRight && !isPressingJump);
     }
 
     /**
