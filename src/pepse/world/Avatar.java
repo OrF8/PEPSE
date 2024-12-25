@@ -20,6 +20,7 @@ public class Avatar extends GameObject {
     private static final int JUMP_ENERGY_CONSUMPTION = 10;
     private static final int IDLE_ENERGY_REGENERATION_RATE = 1;
     private static final String AVATAR_TAG = "avatar";
+    private static final int AVATAR_SIZE = 50;
 
     private final UserInputListener inputListener;
     private double energy = MAX_ENERGY_VALUE;
@@ -33,7 +34,7 @@ public class Avatar extends GameObject {
     public Avatar(Vector2 topLeftCorner, UserInputListener inputListener, ImageReader imageReader) {
         super(
                 topLeftCorner,
-                Vector2.ONES.mult(50),
+                Vector2.ONES.mult(AVATAR_SIZE),
                 imageReader.readImage("assets\\idle_0.png", false)
         );
         physics().preventIntersectionsFromDirection(Vector2.ZERO);
