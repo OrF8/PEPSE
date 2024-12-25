@@ -44,6 +44,57 @@ public class Avatar extends GameObject {
     }
 
     /**
+     * Returns true if the avatar is idle, false otherwise.
+     * @param isPressingLeft The boolean value of whether the left arrow key is pressed.
+     * @param isPressingRight The boolean value of whether the right arrow key is pressed.
+     * @param isPressingJump The boolean value of whether the space key is pressed.
+     * @return True if the avatar is idle, false otherwise.
+     */
+    private boolean isIdle(boolean isPressingLeft, boolean isPressingRight, boolean isPressingJump) {
+        return this.getVelocity().isZero() && !isPressingLeft && !isPressingRight && !isPressingJump;
+    }
+
+    /**
+     * Handles the horizontal movement of the avatar.
+     * @param isPressingLeft The boolean value of whether the left arrow key is pressed.
+     * @param isPressingRight The boolean value of whether the right arrow key is pressed.
+     * @param xVel The current x velocity of the avatar.
+     * @return The updated x velocity of the avatar.
+     */
+    private float handleHorizontalMovement(boolean isPressingLeft, boolean isPressingRight, float xVel) {
+        if (isPressingLeft && !isPressingRight && energy >= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION) {
+            xVel -= VELOCITY_X;
+            energy -= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION;
+        }
+        if (isPressingRight && !isPressingLeft && energy >= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION) {
+            xVel += VELOCITY_X;
+            energy -= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION;
+        }
+        return xVel;
+    }
+
+    /**
+     * Handles the avatar's jump.
+     * @param isPressingJump The boolean value of whether the space key is pressed.
+     */
+    private void handleJump(boolean isPressingJump) {
+        if (isPressingJump && getVelocity().y() == 0 && energy >= JUMP_ENERGY_CONSUMPTION) {
+            transform().setVelocityY(VELOCITY_Y);
+            energy -= JUMP_ENERGY_CONSUMPTION;
+        }
+    }
+
+    /**
+     * Handles the regeneration of the avatar's energy.
+     * @param isIdle The boolean value of whether the avatar is idle.
+     */
+    private void handleEnergyRegeneration(boolean isIdle) {
+        if (isIdle && energy <= MAX_ENERGY_VALUE - IDLE_ENERGY_REGENERATION_RATE) {
+            energy += IDLE_ENERGY_REGENERATION_RATE;
+        }
+    }
+
+    /**
      * Updates the avatar's position and energy value.
      * <p>
      *     The avatar's position is updated based on the user's input.
@@ -75,34 +126,14 @@ public class Avatar extends GameObject {
         boolean isPressingLeft = inputListener.isKeyPressed(KeyEvent.VK_LEFT);
         boolean isPressingRight = inputListener.isKeyPressed(KeyEvent.VK_RIGHT);
         boolean isPressingJump = inputListener.isKeyPressed(KeyEvent.VK_SPACE);
-        boolean isIdle = this.getVelocity().isZero() && !isPressingLeft &&
-                         !isPressingRight && !isPressingJump;
-        /* TODO: can we make the logic of energy consumption better here? */
+        boolean isIdle = isIdle(isPressingLeft, isPressingRight, isPressingJump);
 
-        // Check if user is trying to go left and energy value is sufficient
-        if(isPressingLeft && energy >= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION) {
-            xVel -= VELOCITY_X;
-            if (!isPressingRight) { // if not trying to move in the other direction, consume energy
-                energy -= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION;
-            }
-        }
-        // Check if user is trying to go right and energy value is enough
-        if(isPressingRight && energy >= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION) {
-            xVel += VELOCITY_X;
-            if (!isPressingLeft) { // if not trying to move in the other direction, consume energy
-                energy -= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION;
-            }
-        }
+        xVel = handleHorizontalMovement(isPressingLeft, isPressingRight, xVel);
         transform().setVelocityX(xVel);
-        // Check if user is trying to jump and energy value is sufficient
-        if(isPressingJump && getVelocity().y() == 0 && energy >= JUMP_ENERGY_CONSUMPTION) {
-            transform().setVelocityY(VELOCITY_Y);
-            energy -= JUMP_ENERGY_CONSUMPTION;
-        }
-        // Handle energy regeneration when not moving
-        if(isIdle && energy <= MAX_ENERGY_VALUE - IDLE_ENERGY_REGENERATION_RATE) {
-            energy += IDLE_ENERGY_REGENERATION_RATE;
-        }
+
+        handleJump(isPressingJump);
+
+        handleEnergyRegeneration(isIdle);
 
         System.out.println(Math.round(energy)); // TODO: get rid of that when there's numeric value on screen
     }
