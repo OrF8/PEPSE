@@ -18,6 +18,12 @@ import java.util.List;
  */
 public class Avatar extends GameObject {
 
+    /**
+     * Represents the tag associated with the avatar GameObject.
+     * Used to identify game objects of this type within the game's logic.
+     */
+    public static final String AVATAR_TAG = "avatar";
+
     private static final int MAX_ENERGY_VALUE = 100;
     private static final int MIN_ENERGY_VALUE = 0; // TODO: Do we need min value?
     private static final int JUMP_ENERGY_CONSUMPTION = 10;
@@ -29,7 +35,6 @@ public class Avatar extends GameObject {
     private static final float TIME_BETWEEN_JUMP_IDLE_CLIPS = 0.35f;
     private static final float TIME_BETWEEN_RUN_CLIPS = 0.15f;
     private static final double HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION = 0.5;
-    private static final String AVATAR_TAG = "avatar";
 
     // Paths to animations
     private static final String IDLE_0_ANIMATION_PATH = "assets\\idle_0.png";
@@ -300,4 +305,6 @@ public class Avatar extends GameObject {
            this.transform().setVelocityY(0);
         }
     }
+
+
 }

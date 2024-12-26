@@ -2,10 +2,11 @@ package pepse.world.trees;
 
 import danogl.GameObject;
 import danogl.collisions.Collision;
+import danogl.components.ScheduledTask;
 import danogl.gui.rendering.OvalRenderable;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
-import pepse.util.ColorSupplier;
+import pepse.PepseGameManager;
 import pepse.world.Avatar;
 import pepse.world.Block;
 
@@ -15,32 +16,41 @@ import java.util.function.Consumer;
 // TODO: docs
 public class Fruit extends GameObject {
 
-    private static final double FRUIT_ENERGY_VALUE = 10.0;
+    /**
+     * A constant representing the tag for marking objects as fruits in the game.
+     * Used to differentiate and identify fruit objects by their specific tag.
+     */
+    public static final String FRUIT_TAG = "Fruit";
+
+    private static final double FRUIT_ENERGY_VALUE = 10;
     private static final Color BASE_FRUIT_COLOR = new Color(67, 45, 159);
+    private static final Renderable fruitRenderable = new OvalRenderable(BASE_FRUIT_COLOR);
+
+    private final Consumer<Double> collisionAction;
 
     // TODO: docs
-    public Fruit(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable) {
-        super(topLeftCorner, dimensions, renderable);
-    }
-
-    // TODO: docs
-    public GameObject create(Vector2 position) {
-        return new GameObject(
-                position,
+    public Fruit(Vector2 topLeftCorner, Consumer<Double> collisionAction) {
+        super(
+                topLeftCorner,
                 Vector2.of(Block.SIZE, Block.SIZE),
-                new OvalRenderable(ColorSupplier.approximateColor(BASE_FRUIT_COLOR))
+                fruitRenderable
         );
-    }
-
-    private void uponFruitCollecting(Consumer<Double> action) {
-        action.accept(FRUIT_ENERGY_VALUE);
+        this.setTag(FRUIT_TAG);
+        this.collisionAction = collisionAction;
     }
 
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);
-        if (other.getTag().equals("avatar")) {
-            uponFruitCollecting(Avatar::addEnergy);
+        if (other.getTag().equals(Avatar.AVATAR_TAG)) {
+            collisionAction.accept(FRUIT_ENERGY_VALUE);
+            this.renderer().setRenderable(null);
+            new ScheduledTask(
+                    this,
+                    PepseGameManager.SECONDS_IN_A_DAY_CYCLE,
+                    false,
+                    () -> this.renderer().setRenderable(fruitRenderable)
+            );
         }
     }
 }

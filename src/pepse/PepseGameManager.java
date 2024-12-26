@@ -7,9 +7,9 @@ import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
 import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
-
 import danogl.gui.rendering.TextRenderable;
 import danogl.util.Vector2;
+
 import pepse.world.Avatar;
 import pepse.world.Sky;
 import pepse.world.Terrain;
@@ -18,6 +18,7 @@ import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
 import pepse.world.daynight.SunHalo;
 import pepse.world.trees.Flora;
+import pepse.world.trees.Fruit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,13 @@ import java.util.Map;
  */
 public class PepseGameManager extends GameManager {
 
-    private static final int SECONDS_IN_A_DAY_CYCLE = 30;
+    /**
+     * Represents the number of seconds in a complete day-night cycle within the game.
+     * This value determines the time duration of one full cycle in the game's simulation,
+     * including transitioning between day and night phases and respawning of fruits.
+     */
+    public static final int SECONDS_IN_A_DAY_CYCLE = 30;
+
     private static final int HALO_LAYER_VALUE = -150; // Sun layer is -100, set halo in front of it
     private static final int LEAF_LAYER = -50;
     private static final float AVATAR_Y_POS_OFFSET = 100;
@@ -124,7 +131,6 @@ public class PepseGameManager extends GameManager {
      * Creates the energy display.
      */
     private void createEnergyDisplay() {
-        // Handle numeric energy count display
         TextRenderable energyTextRenderable = new TextRenderable(INITIAL_ENERGY_STRING);
         GameObject energyDisplay = new GameObject(
                 ENERGY_DISPLAY_TOP_LEFT_CORNER, ENERGY_DISPLAY_DIMENSIONS, energyTextRenderable
@@ -135,13 +141,29 @@ public class PepseGameManager extends GameManager {
         );
     }
 
+    /**
+     * Creates and initializes the flora objects, such as trees and their associated components
+     * (fruits and leaves) within the specified range of the game world.
+     * <p></p>
+     * Adds them to the appropriate game object layers.
+     *
+     * @param windowDimensions The dimensions of the game window, used to determine the range
+     *                         for flora creation.
+     */
     private void createFlora(Vector2 windowDimensions) {
-        Flora flora = new Flora(terrain::groundHeightAtX0);
+        Flora flora = new Flora(terrain::groundHeightAtX0, avatar::addEnergy);
+
         Map<GameObject, ArrayList<GameObject>> trees = flora.createInRange(0, (int) windowDimensions.x());
+
         for (GameObject trunk : trees.keySet()) {
             gameObjects().addGameObject(trunk, Layer.STATIC_OBJECTS);
-            for (GameObject leaf : trees.get(trunk)) {
-                gameObjects().addGameObject(leaf, LEAF_LAYER);
+
+            for (GameObject obj : trees.get(trunk)) {
+                if (obj.getTag().equals(Fruit.FRUIT_TAG)) {
+                    gameObjects().addGameObject(obj, Layer.DEFAULT);
+                } else {
+                    gameObjects().addGameObject(obj, LEAF_LAYER);
+                }
             }
         }
     }
