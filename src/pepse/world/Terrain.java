@@ -1,11 +1,13 @@
 package pepse.world;
 
 import danogl.GameObject;
+import danogl.components.CoordinateSpace;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
 import pepse.util.ColorSupplier;
 import pepse.util.LocationCalculator;
+import pepse.util.NoiseGenerator;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -63,21 +65,21 @@ public class Terrain {
     public List<GameObject> createInRange(int minX, int maxX) {
         List<GameObject> blockList = new ArrayList<>();
 
-        int x = LocationCalculator.getClosestMultToBlockSize(minX);
+        int startX = LocationCalculator.getClosestMultToBlockSize(minX);
         maxX = LocationCalculator.getClosestMultToBlockSize(maxX);
 
         // Add blocks at increasing X positions to the list
-        for (; x < maxX; x += Block.SIZE) {
+        for (int x = startX; x < maxX; x += Block.SIZE) {
 
             float y = (float) Math.floor(groundHeightAtX0(x) / Block.SIZE) * Block.SIZE;
 
             for (int i = 0; i < TERRAIN_DEPTH; i++) {
 
-                Renderable rectangleBlock = new RectangleRenderable(
+                Renderable blockRenderer = new RectangleRenderable(
                         ColorSupplier.approximateColor(BASE_BACKGROUND_COLOR)
                 ); // Create a rectangle with approximate color
 
-                Block block = new Block(Vector2.of(x, y + i * Block.SIZE), rectangleBlock);
+                Block block = new Block(Vector2.of(x, y + i * Block.SIZE), blockRenderer);
                 block.setTag(BLOCK_TAG); // set block tag to "ground"
                 blockList.add(block); // add to blockList
             }
