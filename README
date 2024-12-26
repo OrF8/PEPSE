@@ -7,32 +7,45 @@ noam.kimhi,or_forshmit8
 
 We handled the creation of trees in the world using 3 classes with the following responsibilities:
 (*) Trunk - This class is responsible for creating the trunk of a tree at a given position. Defines the range
-            of trunk heights and decides the height of a tree on a random basis.
+            of trunk heights and decides the height of a tree on a random basis. This is a package private
+            class.
 
-(*) Leaf - Responsible for creating a single leaf object in the game at a given position and color.
+(*) Leaf - Responsible for creating a single leaf object in the game at a given position and color. This is
+           a package private class.
 
-(*) Flora - This class handles the logic behind generating trunks and leaves. This is done by the method
-            createInRange which gets a range of X positions to plant trees in. First, a trunk is positioned
-            at a random X location based on a threshold. For each trunk the function creates a foliage - list
-            of leaves that are also created on a random basis inside a grid around the trunk.
-            This data structure is then passed to the caller, in our case the PepseGameManager,that adds each
-            trunk and its foliage to the relevant layers in the game.
+(*) Fruit - Creates a collectable fruit that activates a consumer upon collision.
+
+(*) Flora - This class handles the logic behind generating trunks and their foliage and fruits. This is done
+            by the method createInRange which gets a range of X positions to plant trees in. First, a trunk
+            is positioned at a random X location based on a threshold. For each trunk the function creates
+            flora - list of leaves and fruits that are also created on a random basis inside a grid around
+            the trunk. This data structure is then passed to the caller, in our case the PepseGameManager,
+            that adds each trunk and its foliage to the relevant layers in the game. Since Flora handles the
+            entire creation of all the flora in the game, only the fruits are public (since they need to be
+            collected) and the rest of the components are package private. This increases the encapsulation
+            and single responsibility of each component of flora in the game.
 
 --------------------------------------------------------------------------------------------------------------
 
 # QUESTION 2 - Relationships between classes in package pepse.world.tree:
 
-The trunk is not familiar with the concept of a leaf, and neither does the leaf know about its trunk, the
-class Flora is responsible for the coordination between the two, and acts as a container for trunks and their
-foliage (list of leaves). The trunk and the leaves do not take care of their own positioning inside the game,
-the entire logic of trunks and leaves placement is handled inside Flora class.
+The trunk is not familiar with the concept of a leaf or a fruit, and neither do the leaf or the fruit know
+about their trunk, the class Flora is responsible for the coordination between the components, and acts as a
+container for trunks and their foliage (leaves and fruits). The trunk, fruits and leaves do not take care of
+their own positioning inside the game, the entire logic of their placement is handled inside Flora class.
 
+Usage of callbacks:
 In order to create trunks at reasonable locations, we needed to get an idea of where the ground starts.
 We could potentially have Flora directly ask for groundHeightAtX0 from the Class Terrain, but this will
 further complicate the dependencies in the program where in fact Flora only needs a minor detail which
 does not require for it to know the entire class Terrain. Therefore, we decided to pass a callback from
 PepseGameManager to Flora, in order to let this class get the ground height without knowing what a Terrain is.
 That way, Flora can easily plant trunks at reasonable locations based on ground height.
+
+Fruits need to activate the avatar's energy regeneration method, so we made an override to the OnCollision
+method of fruits to activate the other object's method. Flora is responsible for passing the correct method
+to Fruit, that way fruits don't have to be familiar with the concept of an avatar, and still activate its
+method upon collision.
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -44,10 +57,19 @@ TODO: delete this when we are done
 Layers:
 -200 Sky (BACKGROUND)
 -200 Sun (BACKGROUND)
+-200 Raindrops (BACKGROUND)
 -150 Halo (CUSTOM LAYER)
 -100 Terrain (STATIC)
 -100 Trunk (STATIC)
+-100 Cloud (STATIC)
 -50 Leaf (CUSTOM LAYER)
 0 Avatar (DEFAULT)
 100 Night (FOREGROUND)
 200 Energy Display (UI)
+
+TODO: Places in the code that are seed based
+- Flora: creation of trunks, leaves, fruits -> needs a seed
+- Leaf: a random for the delay time of when to start rotating (does it need a seed?)
+- Trunk: trunk height is random -> needs a seed
+- Cloud: has randomness on which cloud type to create shape (do we need to recreate a cloud?)
+- Terrain: Already gets a seed :)
