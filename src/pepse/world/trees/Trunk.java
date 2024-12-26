@@ -21,7 +21,7 @@ public class Trunk {
 
     private static final Color BASE_TRUNK_COLOR = new Color(100, 50, 20);
     private static final int MIN_TREE_HEIGHT = 4;
-    private static final int MAX_TREE_HEIGHT = 7;
+    private static final int MAX_TREE_HEIGHT = 10;
 
     private final Random random;
 
