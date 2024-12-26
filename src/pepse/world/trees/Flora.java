@@ -29,8 +29,8 @@ import java.util.function.UnaryOperator;
  */
 public class Flora {
 
-    private static final double TREE_PLANTING_THRESHOLD = 0.05;
-    private static final double LEAF_PLACEMENT_THRESHOLD = 0.35;
+    private static final double TREE_PLANTING_THRESHOLD = 0.1;
+    private static final double LEAF_PLACEMENT_THRESHOLD = 0.4;
     private static final int FOLIAGE_HEIGHT = 8;
     private static final int FOLIAGE_WIDTH = 8;
 
@@ -74,12 +74,11 @@ public class Flora {
      * the configured foliage dimensions and positions them relative to the trunk.
      * </p>
      *
-     * @param leafCreator A {@link Leaf} object responsible for creating individual leaf instances.
      * @param trunkXPos The x-coordinate of the trunk position.
      * @param trunkYPos The y-coordinate of the trunk's top position.
      * @return An {@code ArrayList<GameObject>} containing the foliage (leaves) created for the tree.
      */
-    private ArrayList<GameObject> createFoliage(Leaf leafCreator, int trunkXPos, int trunkYPos) {
+    private ArrayList<GameObject> createFoliage(int trunkXPos, int trunkYPos) {
         ArrayList<GameObject> foliage = new ArrayList<>();
         int startingLeafHeight = trunkYPos - FOLIAGE_HEIGHT / 2 * Block.SIZE;
         // Create foliage in a grid of size (FOLIAGE_HEIGHT x FOLIAGE_WIDTH).
@@ -88,6 +87,7 @@ public class Flora {
             // For each row of leaves, place a leaf at increasing X positions based on shouldAddLeaf's result.
             for (int col = 0, leafX = startingLeafX; col < FOLIAGE_WIDTH; col++, leafX += Block.SIZE) {
                 if (shouldAddLeaf()) { // Add the leaf to the leave list
+                    Leaf leafCreator = new Leaf();
                     GameObject leaf = leafCreator.create(Vector2.of(leafX, leafY));
                     foliage.add(leaf);
                 }
@@ -113,7 +113,6 @@ public class Flora {
     public Map<GameObject, ArrayList<GameObject>> createInRange(int minX, int maxX) {
         // TODO: We think that A is PepseGameManager, C is Flora, and B is Terrain.
         Trunk trunkCreator = new Trunk();
-        Leaf leafCreator = new Leaf();
         Map<GameObject, ArrayList<GameObject>> floraMap = new HashMap<>();
 
         // Calculate the position of trunks based on Block.SIZE to ensure alignment.
@@ -124,7 +123,7 @@ public class Flora {
             if (shouldPlantTree()) {
                 Vector2 trunkPosition = Vector2.of(trunkXPos, floatFunction.apply((float) trunkXPos));
                 GameObject trunk = trunkCreator.create(trunkPosition);
-                floraMap.put(trunk, createFoliage(leafCreator, trunkXPos, (int)trunk.getTopLeftCorner().y()));
+                floraMap.put(trunk, createFoliage(trunkXPos, (int)trunk.getTopLeftCorner().y()));
             }
         }
 
