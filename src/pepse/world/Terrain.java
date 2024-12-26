@@ -4,6 +4,7 @@ import danogl.gui.rendering.RectangleRenderable;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
 import pepse.util.ColorSupplier;
+import pepse.util.LocationCalculator;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -60,8 +61,11 @@ public class Terrain {
     public List<Block> createInRange(int minX, int maxX) {
         List<Block> blockList = new ArrayList<>();
 
+        int x = LocationCalculator.getClosestMultToBlockSize(minX);
+        maxX = LocationCalculator.getClosestMultToBlockSize(maxX);
+
         // Add blocks at increasing X positions to the list
-        for (int x = getClosestMultToBlockSize(minX); x < getClosestMultToBlockSize(maxX); x += Block.SIZE) {
+        for (; x < maxX; x += Block.SIZE) {
 
             float y = (float) Math.floor(groundHeightAtX0(x) / Block.SIZE) * Block.SIZE;
 
@@ -77,20 +81,5 @@ public class Terrain {
             }
         }
         return blockList;
-    }
-
-    /**
-     * Returns the closest (smaller) multiple of the block size to the given number.
-     * @param num The number.
-     * @return The closest (smaller) multiple of the block size to the given number.
-     *
-     * @see Block#SIZE
-     * @see Terrain#createInRange(int, int)
-     *
-     * @implNote This method is used to ensure that the blocks are created in multiples of the block size.
-     *           This is done to ensure that the blocks are aligned properly.
-     */
-    private static int getClosestMultToBlockSize(int num) {
-        return (int) Math.floor((double) num / Block.SIZE) * Block.SIZE;
     }
 }

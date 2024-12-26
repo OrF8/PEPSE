@@ -1,5 +1,8 @@
 package pepse.util;
 
+/**
+ * This class generates a smooth-noise function
+ */
 public class NoiseGenerator {
 	private double seed;
 	private long default_size;
@@ -7,12 +10,23 @@ public class NoiseGenerator {
 	private int[] permutation;
 	private double startPoint;
 
+	/**
+	 * Constructs a new NoiseGenerator instance with the given seed and start point.
+	 *
+	 * @param seed The seed value to initialize the noise generator.
+	 * @param startPoint The starting point used in generating noise.
+	 */
 	public NoiseGenerator(double seed,int startPoint) {
 		this.seed = seed;
 		this.startPoint =startPoint;
 		init();
 	}
 
+	/**
+	 * Initializes the permutation array used for generating noise.
+	 * This method populates the internal permutation array `p` with a repeated set of predefined
+	 * values to enable methods to use a consistent permutation table for noise calculations.
+	 */
 	private void init() {
 		// Initialize the permutation array.
 		this.p = new int[512];
@@ -45,6 +59,13 @@ public class NoiseGenerator {
 
 	}
 
+	/**
+	 * Generates a noise value based on the given parameters using layered smooth noise functions.
+	 *
+	 * @param x The input value for which the noise is generated.
+	 * @param factor A scaling factor that modifies the resulting noise value.
+	 * @return A double representing the calculated noise value, scaled by the given factor.
+	 */
 	public double noise(double x,double factor) {
 		double value = 0.0;
 		double currentPoint = startPoint;
@@ -57,6 +78,16 @@ public class NoiseGenerator {
 		return value*factor / startPoint;
 	}
 
+	/**
+	 * Computes smooth noise for three-dimensional input coordinates, which is used
+	 * in generating procedural textures or terrains. This function blends noise values
+	 * from the surrounding points in the grid using fade and interpolation functions.
+	 *
+	 * @param x The x-coordinate for the noise generation.
+	 * @param y The y-coordinate for the noise generation.
+	 * @param z The z-coordinate for the noise generation.
+	 * @return A double representing the smooth noise value at the given (x, y, z) coordinates.
+	 */
 	private double smoothNoise(double x, double y, double z) {
 		// Offset each coordinate by the seed value
 		x += this.seed;
@@ -92,14 +123,42 @@ public class NoiseGenerator {
 										grad(p[BB + 1], x - 1, 	y - 1, 	z - 1	))));
 	}
 
+	/**
+	 * Applies the fade function to smooth transitions for a given input value.
+	 * This function is typically used in noise generation algorithms to create
+	 * smoother interpolations between values.
+	 *
+	 * @param t The input value to be transformed, typically in the range [0, 1].
+	 * @return A double representing the smoothed output value based on the input.
+	 */
 	private double fade(double t) {
 		return t * t * t * (t * (t * 6 - 15) + 10);
 	}
 
+	/**
+	 * Performs a linear interpolation between two values based on a given factor.
+	 *
+	 * @param t The interpolation factor, typically between 0 and 1. A value of 0 returns `a`,
+	 *          and a value of 1 returns `b`.
+	 * @param a The starting value of the interpolation.
+	 * @param b The ending value of the interpolation.
+	 * @return The interpolated value between `a` and `b` based on the factor `t`.
+	 */
 	private double lerp(double t, double a, double b) {
 		return a + t * (b - a);
 	}
 
+	/**
+	 * Computes the gradient vector based on the provided hash value and input coordinates.
+	 * The method uses the hash value to determine one of 12 gradient directions
+	 * and computes the dot product of the vector with the input coordinates.
+	 *
+	 * @param hash The hash value used to determine the gradient direction.
+	 * @param x The x-coordinate of the input point.
+	 * @param y The y-coordinate of the input point.
+	 * @param z The z-coordinate of the input point.
+	 * @return A double representing the gradient value based on the hash and input coordinates.
+	 */
 	private double grad(int hash, double x, double y, double z) {
 		int h = hash & 15; // CONVERT LO 4 BITS OF HASH CODE
 		double u = h < 8 ? x : y, // INTO 12 GRADIENT DIRECTIONS.

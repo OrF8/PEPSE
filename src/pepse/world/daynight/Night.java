@@ -9,7 +9,10 @@ import danogl.util.Vector2;
 import java.awt.Color;
 
 /**
- * TODO: Docs
+ * The Night class represents the night cycle in a game. It creates a game object
+ * that transitions between a transparent state (day) and an opaque state (midnight),
+ * simulating a day-night cycle. The object follows the camera and alternates its
+ * opacity over time based on the configured cycle length.
  */
 public class Night {
 
@@ -17,6 +20,12 @@ public class Night {
     private static final float DAY_OPACITY = 0;
     private static final String NIGHT = "night";
     private static final float HALF_FACTOR = 0.5f;
+
+    /**
+     * Creates a new instance of the Night class.
+     * This constructor initializes an empty Night object with no additional properties or behavior.
+     */
+    public Night() {}
 
     /**
      * Creates a night object that cycles between day and night.

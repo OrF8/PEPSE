@@ -4,12 +4,19 @@ import java.awt.*;
 import java.util.Random;
 
 /**
- * Provides procedurally-generated colors around a pivot.
+ * Provides procedurally generated colors around a pivot.
  * @author Dan Nirel
  */
 public final class ColorSupplier {
     private static final int DEFAULT_COLOR_DELTA = 10;
     private final static Random random = new Random();
+
+    /**
+     * Constructs a new ColorSupplier instance.
+     * This constructor initializes the class, allowing access to methods
+     * for generating procedurally adjusted colors.
+     */
+    public ColorSupplier() {}
 
     /**
      * Returns a color similar to baseColor, with a default delta.

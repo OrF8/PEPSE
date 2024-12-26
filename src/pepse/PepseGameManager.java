@@ -17,8 +17,13 @@ import pepse.world.Block;
 import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
 import pepse.world.daynight.SunHalo;
+import pepse.world.trees.Flora;
+import pepse.world.trees.Leaf;
+import pepse.world.trees.Trunk;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The main class for the game.
@@ -37,6 +42,7 @@ public class PepseGameManager extends GameManager {
 
     private static final int SECONDS_IN_A_DAY_CYCLE = 30;
     private static final int HALO_LAYER_VALUE = -150; // Sun layer is -100, set halo in front of it
+    private static final int LEAF_LAYER = -50;
     private static final float AVATAR_Y_POS_OFFSET = 100;
     private static final float AVATAR_X_POS_RATIO = 2;
     private static final String INITIAL_ENERGY_STRING = "100%";
@@ -46,6 +52,13 @@ public class PepseGameManager extends GameManager {
 
     private Terrain terrain;
     private Avatar avatar;
+
+    /**
+     * Default constructor for the PepseGameManager.
+     * Initializes a new instance of the game manager, managing the creation and maintenance of
+     * various game elements.
+     */
+    public PepseGameManager() {}
 
     /**
      * Creates the sky.
@@ -124,6 +137,17 @@ public class PepseGameManager extends GameManager {
         );
     }
 
+    private void createFlora(Vector2 windowDimensions) {
+        Flora flora = new Flora(terrain::groundHeightAtX0);
+        Map<GameObject, ArrayList<GameObject>> trees = flora.createInRange(0, (int) windowDimensions.x());
+        for (GameObject trunk : trees.keySet()) {
+            gameObjects().addGameObject(trunk, Layer.STATIC_OBJECTS);
+            for (GameObject leaf : trees.get(trunk)) {
+                gameObjects().addGameObject(leaf, LEAF_LAYER);
+            }
+        }
+    }
+
     /**
      * Initializes the game objects.
      * @param windowDimensions The dimensions of the game window.
@@ -134,6 +158,7 @@ public class PepseGameManager extends GameManager {
      * @see #createSunAndHalo(Vector2)
      * @see #createAvatar(Vector2, UserInputListener, ImageReader)
      * @see #createEnergyDisplay()
+     * @see #createFlora(Vector2)
      */
     private void initGameObjects(
             Vector2 windowDimensions,
@@ -146,6 +171,7 @@ public class PepseGameManager extends GameManager {
         createSunAndHalo(windowDimensions); // create sun and halo
         createAvatar(windowDimensions, inputListener, imageReader); // create avatar
         createEnergyDisplay(); // create energy display
+        createFlora(windowDimensions); // create the flora of the game
     }
 
     /**
@@ -155,8 +181,6 @@ public class PepseGameManager extends GameManager {
      * @param inputListener The input listener to use for getting user input.
      * @param windowController The window controller to use for creating the game window.
      *                         The window controller is also used for getting the window dimensions.
-     *
-     * @see #initGameObjects(Vector2, UserInputListener, ImageReader)
      */
     @Override
     public void initializeGame(

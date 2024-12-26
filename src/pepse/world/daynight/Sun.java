@@ -22,6 +22,14 @@ public class Sun {
     private static final float HALF_FACTOR = 0.5f;
 
     /**
+     * Default constructor for the Sun class.
+     * This constructor initializes a new instance of the Sun class.
+     * The Sun class is responsible for creating the sun game object that moves
+     * in a circular path as part of the game's visual and dynamic elements.
+     */
+    public Sun() {}
+
+    /**
      * Creates a sun game object.
      * <p>
      *     The sun is a yellow circle that moves in a circular path.
@@ -35,6 +43,7 @@ public class Sun {
     public static GameObject create(Vector2 windowDimensions, float cycleLength) {
         Renderable sunRenderer = new OvalRenderable(Color.YELLOW);
         GameObject sun = new GameObject(Vector2.ZERO, SUN_SIZE, sunRenderer);
+
         sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         sun.setTag(SUN_TAG);
 
