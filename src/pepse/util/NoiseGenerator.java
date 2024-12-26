@@ -75,7 +75,7 @@ public class NoiseGenerator {
 			currentPoint /= 2.0;
 		}
 
-		return value*factor / startPoint;
+		return value * factor / startPoint;
 	}
 
 	/**
