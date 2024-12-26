@@ -18,13 +18,15 @@ import java.util.Random;
  * @author Noam Kimhi
  * @author Or Forshmit
  */
-public class Trunk {
+class Trunk {
 
+    // Trunk constants
     private static final int MIN_TREE_HEIGHT = 4;
     private static final int MAX_TREE_HEIGHT = 10;
     private static final int TRUNK_COLOR_DELTA = 15;
     private static final Color BASE_TRUNK_COLOR = new Color(100, 50, 20);
 
+    // Private fields
     private final Random random;
 
     /**
@@ -32,7 +34,7 @@ public class Trunk {
      * This constructor initializes the internal random number generator
      * used for creating tree trunks with randomized characteristics, such as height.
      */
-    public Trunk() {
+    Trunk() {
         this.random = new Random();
     }
 
@@ -48,7 +50,7 @@ public class Trunk {
      *                 The trunk will extend upwards from this position.
      * @return A GameObject representing the created tree trunk with specified properties.
      */
-    public GameObject create(Vector2 position) {
+     GameObject create(Vector2 position) {
         float treeHeight = random.nextInt(MIN_TREE_HEIGHT, MAX_TREE_HEIGHT) * Block.SIZE;
         Vector2 topLeftCorner = Vector2.of(position.x(), position.y() - treeHeight);
         Vector2 dimensions = Vector2.of(Block.SIZE, treeHeight);

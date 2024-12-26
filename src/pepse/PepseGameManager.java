@@ -39,13 +39,7 @@ import java.util.Map;
  */
 public class PepseGameManager extends GameManager {
 
-    /**
-     * Represents the number of seconds in a complete day-night cycle within the game.
-     * This value determines the time duration of one full cycle in the game's simulation,
-     * including transitioning between day and night phases and respawning of fruits.
-     */
-    public static final int SECONDS_IN_A_DAY_CYCLE = 30;
-
+    private static final int SECONDS_IN_A_DAY_CYCLE = 30;
     private static final int HALO_LAYER_VALUE = -150; // Sun layer is -100, set halo in front of it
     private static final int LEAF_LAYER = -50;
     private static final float AVATAR_Y_POS_OFFSET = 100;
@@ -70,8 +64,8 @@ public class PepseGameManager extends GameManager {
      * @param windowDimensions The dimensions of the game window.
      */
     private void createSky(Vector2 windowDimensions) {
-        GameObject sky = Sky.create(windowDimensions); // create sky
-        gameObjects().addGameObject(sky, Layer.BACKGROUND); // add sky to the background layer
+        GameObject sky = Sky.create(windowDimensions);
+        gameObjects().addGameObject(sky, Layer.BACKGROUND);
     }
 
     /**
@@ -80,7 +74,9 @@ public class PepseGameManager extends GameManager {
      */
     private void createTerrain(Vector2 windowDimensions) {
         Terrain terrain = new Terrain(windowDimensions, 10);
+        // Create terrain made of blocks based on the method createInRange
         List<Block> blockList = terrain.createInRange(0, (int) windowDimensions.x());
+        // Add the blocks that make up the terrain to the static layer.
         for (Block block : blockList) {
             gameObjects().addGameObject(block, Layer.STATIC_OBJECTS);
         }
@@ -101,8 +97,10 @@ public class PepseGameManager extends GameManager {
      * @param windowDimensions The dimensions of the game window.
      */
     private void createSunAndHalo(Vector2 windowDimensions) {
+        // Create the sun
         GameObject sun = Sun.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE);
         gameObjects().addGameObject(sun, Layer.BACKGROUND);
+        // Create its halo
         GameObject sunHalo = SunHalo.create(sun);
         gameObjects().addGameObject(sunHalo, HALO_LAYER_VALUE);
     }
@@ -116,8 +114,11 @@ public class PepseGameManager extends GameManager {
     private void createAvatar(
             Vector2 windowDimensions, UserInputListener inputListener, ImageReader imageReader
     ) {
+        // Create the avatar at the middle of the screen
         float avatarXPosition = windowDimensions.x() / AVATAR_X_POS_RATIO;
+        // Create the avatar slightly above the ground to prevent creation inside the ground
         float avatarYPosition = terrain.groundHeightAtX0(avatarXPosition) - AVATAR_Y_POS_OFFSET; // TODO: Check later
+
         Avatar avatar = new Avatar(
                 Vector2.of(avatarXPosition, avatarYPosition),
                 inputListener,
@@ -128,7 +129,9 @@ public class PepseGameManager extends GameManager {
     }
 
     /**
-     * Creates the energy display.
+     * Creates and initializes the energy display UI element in the game.
+     * The energy display dynamically updates to reflect the current energy
+     * level of the avatar.
      */
     private void createEnergyDisplay() {
         TextRenderable energyTextRenderable = new TextRenderable(INITIAL_ENERGY_STRING);
@@ -136,6 +139,8 @@ public class PepseGameManager extends GameManager {
                 ENERGY_DISPLAY_TOP_LEFT_CORNER, ENERGY_DISPLAY_DIMENSIONS, energyTextRenderable
         );
         gameObjects().addGameObject(energyDisplay, Layer.UI);
+
+        // Add a component to the display such that at update() the energy amount will be updated.
         energyDisplay.addComponent(
                 deltaTime -> energyTextRenderable.setString(Math.round(avatar.getEnergy()) + PERCENT)
         );
@@ -151,17 +156,17 @@ public class PepseGameManager extends GameManager {
      *                         for flora creation.
      */
     private void createFlora(Vector2 windowDimensions) {
-        Flora flora = new Flora(terrain::groundHeightAtX0, avatar::addEnergy);
-
+        Flora flora = new Flora(terrain::groundHeightAtX0, avatar::addEnergy, SECONDS_IN_A_DAY_CYCLE);
+        // Create a map that maps trunks to its flora
         Map<GameObject, ArrayList<GameObject>> trees = flora.createInRange(0, (int) windowDimensions.x());
-
+        // Add each trunk to the game.
         for (GameObject trunk : trees.keySet()) {
             gameObjects().addGameObject(trunk, Layer.STATIC_OBJECTS);
-
+            // For each trunk, add its flora (fruits and foliage) to the game.
             for (GameObject obj : trees.get(trunk)) {
-                if (obj.getTag().equals(Fruit.FRUIT_TAG)) {
+                if (obj.getTag().equals(Fruit.FRUIT_TAG)) { // If the object is a fruit
                     gameObjects().addGameObject(obj, Layer.DEFAULT);
-                } else {
+                } else { // If the object is a leaf
                     gameObjects().addGameObject(obj, LEAF_LAYER);
                 }
             }

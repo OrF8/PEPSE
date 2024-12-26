@@ -24,8 +24,8 @@ public class Avatar extends GameObject {
      */
     public static final String AVATAR_TAG = "avatar";
 
+    // Avatar constants
     private static final int MAX_ENERGY_VALUE = 100;
-    private static final int MIN_ENERGY_VALUE = 0; // TODO: Do we need min value?
     private static final int JUMP_ENERGY_CONSUMPTION = 10;
     private static final int IDLE_ENERGY_REGENERATION_RATE = 1;
     private static final int AVATAR_SIZE = 50;
@@ -52,7 +52,7 @@ public class Avatar extends GameObject {
     private static final String RUN_4_ANIMATION_PATH = "assets\\run_4.png";
     private static final String RUN_5_ANIMATION_PATH = "assets\\run_5.png";
 
-    // private fields
+    // Private fields
     private final UserInputListener inputListener;
     private double energy = MAX_ENERGY_VALUE;
     private AnimationRenderable idleAnimationRenderable;

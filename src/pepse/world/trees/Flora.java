@@ -26,12 +26,16 @@ import java.util.function.UnaryOperator;
  */
 public class Flora {
 
+    // Flora constants
     private static final double TREE_PLANTING_THRESHOLD = 0.1;
     private static final double LEAF_PLACEMENT_THRESHOLD = 0.4;
     private static final double FRUIT_PLACEMENT_THRESHOLD = 0.05;
     private static final int FOLIAGE_HEIGHT = 8;
     private static final int FOLIAGE_WIDTH = 8;
+    private static final int HALF_DIVISION_FACTOR = 2;
 
+    // Private fields
+    private final float fruitRespawnCycleLength;
     private final UnaryOperator<Float> floatFunction;
     private final Consumer<Double> fruitCollisionCallback;
     private final Random random;
@@ -43,7 +47,12 @@ public class Flora {
      * @param floatFunction A function that calculates the ground height for a given
      *                      x-coordinate, used to determine where flora should be placed.
      */
-    public Flora(UnaryOperator<Float> floatFunction, Consumer<Double> fruitCollisionCallback) {
+    public Flora(
+            UnaryOperator<Float> floatFunction,
+            Consumer<Double> fruitCollisionCallback,
+            float fruitRespawnCycleLength
+    ) {
+        this.fruitRespawnCycleLength = fruitRespawnCycleLength;
         this.floatFunction = floatFunction;
         this.fruitCollisionCallback = fruitCollisionCallback;
         this.random = new Random();
@@ -72,11 +81,11 @@ public class Flora {
      * the position of the trunk and a random threshold.
      *
      * @param trunkXPos The x-coordinate position of the tree trunk.
-     * @param leafX The x-coordinate position of the fruit being evaluated.
+     * @param fruitX The x-coordinate position of the fruit being evaluated.
      * @return {@code true} if a fruit should be added based on the conditions, otherwise {@code false}.
      */
-    private boolean shouldAddFruit(int trunkXPos, int leafX) {
-        return leafX != trunkXPos && random.nextDouble(0, 1) < FRUIT_PLACEMENT_THRESHOLD;
+    private boolean shouldAddFruit(int trunkXPos, int fruitX) {
+        return fruitX != trunkXPos && random.nextDouble(0, 1) < FRUIT_PLACEMENT_THRESHOLD;
     }
 
     /**
@@ -92,10 +101,12 @@ public class Flora {
      */
     private ArrayList<GameObject> createFoliage(int trunkXPos, int trunkYPos) {
         ArrayList<GameObject> foliage = new ArrayList<>();
-        int startingObjY = trunkYPos - FOLIAGE_HEIGHT / 2 * Block.SIZE;
+        int startingObjY = trunkYPos - FOLIAGE_HEIGHT / HALF_DIVISION_FACTOR * Block.SIZE;
         // Create foliage in a grid of size (FOLIAGE_HEIGHT x FOLIAGE_WIDTH).
         for (int row = 0, objY = startingObjY; row < FOLIAGE_HEIGHT; row++, objY += Block.SIZE) {
-            int startingObjX = trunkXPos - FOLIAGE_WIDTH / 2 * Block.SIZE;
+            int startingObjX = trunkXPos -
+                               (FOLIAGE_WIDTH / HALF_DIVISION_FACTOR * Block.SIZE) -
+                               (Block.SIZE / HALF_DIVISION_FACTOR);
             // For each row of leaves, place a leaf at increasing X positions based on shouldAddLeaf's result.
             for (int col = 0, objX = startingObjX; col < FOLIAGE_WIDTH; col++, objX += Block.SIZE) {
                 Vector2 topLeftCorner = Vector2.of(objX, objY);
@@ -104,7 +115,7 @@ public class Flora {
                     GameObject leaf = leafCreator.create(topLeftCorner);
                     foliage.add(leaf);
                 } else if (shouldAddFruit(trunkXPos, objX)) { // Add a fruit if a leaf was not added.
-                    Fruit fruit = new Fruit(topLeftCorner, fruitCollisionCallback);
+                    Fruit fruit = new Fruit(topLeftCorner, fruitCollisionCallback, fruitRespawnCycleLength);
                     foliage.add(fruit);
                 }
             }

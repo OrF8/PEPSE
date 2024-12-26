@@ -14,12 +14,13 @@ import java.awt.Color;
  */
 public class Sun {
 
-    private static final Vector2 SUN_SIZE = Vector2.of(90, 90); // TODO: verify size
-    private static final String SUN_TAG = "sun";
+    // Sun constants
     private static final float INITIAL_SUN_CYCLE_ANGLE = 0;
     private static final float FINAL_SUN_CYCLE_ANGLE = 360;
     private static final float TWO_THIRDS_FACTOR = 2 / 3f;
     private static final float HALF_FACTOR = 0.5f;
+    private static final String SUN_TAG = "sun";
+    private static final Vector2 SUN_SIZE = Vector2.of(90, 90); // TODO: verify size
 
     /**
      * Default constructor for the Sun class.
