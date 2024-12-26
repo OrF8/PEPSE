@@ -20,6 +20,9 @@ import java.util.function.BiConsumer;
 /**
  * Represents a Cloud game object composed of multiple blocks.
  * The cloud moves horizontally and can generate raindrops.
+ *
+ * @author Noam Kimhi
+ * @author Or Forshmit
  */
 public class Cloud {
 
@@ -183,6 +186,9 @@ public class Cloud {
      *      The Raindrop utilizes the {@link Transition} mechanism to handle the fading of its opacity
      *      over time and ensures that once it becomes fully transparent, it is removed from the game.
      * </p>
+     *
+     * @author Noam Kimhi
+     * @author Or Forshmit
      */
     private static class RainDrop extends GameObject {
 
