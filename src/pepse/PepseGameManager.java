@@ -3,10 +3,12 @@ package pepse;
 import danogl.GameManager;
 import danogl.GameObject;
 import danogl.collisions.Layer;
+import danogl.components.CoordinateSpace;
 import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
 import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
+import danogl.gui.rendering.Camera;
 import danogl.gui.rendering.TextRenderable;
 import danogl.util.Vector2;
 
@@ -118,6 +120,13 @@ public class PepseGameManager extends GameManager {
                 imageReader
         );
         gameObjects().addGameObject(avatar, Layer.DEFAULT);
+
+        // Make the camera follow the avatar
+        Vector2 distanceFromCenter = windowDimensions.mult(0.5f).add(
+                Vector2.of(-avatarXPosition, -avatarYPosition)
+        );
+        setCamera(new Camera(avatar, distanceFromCenter, windowDimensions, windowDimensions));
+
         this.avatar = avatar;
     }
 
@@ -132,6 +141,8 @@ public class PepseGameManager extends GameManager {
                 ENERGY_DISPLAY_TOP_LEFT_CORNER, ENERGY_DISPLAY_DIMENSIONS, energyTextRenderable
         );
         gameObjects().addGameObject(energyDisplay, Layer.UI);
+
+        energyDisplay.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
 
         // Add a component to the display such that at update() the energy amount will be updated.
         energyDisplay.addComponent(
@@ -207,7 +218,6 @@ public class PepseGameManager extends GameManager {
     }
 
     private void removeGameObject(GameObject gameObject, int layer) {
-        System.out.println("Removed: " + gameObject.getTag() + " in layer " + layer);
         gameObjects().removeGameObject(gameObject, layer);
     }
 
