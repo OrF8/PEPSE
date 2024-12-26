@@ -168,8 +168,9 @@ public class PepseGameManager extends GameManager {
     /**
      * Creates and initializes the flora objects, such as trees and their associated components
      * (fruits and leaves) within the specified range of the game world.
-     * <p></p>
-     * Adds them to the appropriate game object layers.
+     * <p>
+     *      Adds them to the appropriate game object layers.
+     * </p>
      */
     private void createFlora(int rangeStart, int rangeEnd) {
         // Create a map that maps trunks to its flora
