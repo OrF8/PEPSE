@@ -1,5 +1,6 @@
 package pepse.world;
 
+import danogl.GameObject;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
@@ -59,8 +60,8 @@ public class Terrain {
      * @param maxX The maximum x position.
      * @return A list of blocks in the given range.
      */
-    public List<Block> createInRange(int minX, int maxX) {
-        List<Block> blockList = new ArrayList<>();
+    public List<GameObject> createInRange(int minX, int maxX) {
+        List<GameObject> blockList = new ArrayList<>();
 
         int x = LocationCalculator.getClosestMultToBlockSize(minX);
         maxX = LocationCalculator.getClosestMultToBlockSize(maxX);
