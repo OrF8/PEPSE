@@ -51,6 +51,7 @@ public class PepseGameManager extends GameManager {
     private static final Vector2 ENERGY_DISPLAY_TOP_LEFT_CORNER = Vector2.of(10, 20);
     private static final Vector2 ENERGY_DISPLAY_DIMENSIONS = Vector2.of(50, 50);
     private static final float OFFSET = 150;
+    private static final String TITLE = "Ghosty PEPSENautics - The Game";
 
     private int seed;
     private float outOfWindowThreshold;
@@ -66,7 +67,9 @@ public class PepseGameManager extends GameManager {
      * Initializes a new instance of the game manager, managing the creation and maintenance of
      * various game elements.
      */
-    public PepseGameManager() {}
+    public PepseGameManager(String title) {
+        super(title);
+    }
 
     /**
      * Creates the sky.
@@ -306,7 +309,7 @@ public class PepseGameManager extends GameManager {
      * @param args The command line arguments.
      */
     public static void main(String[] args) {
-        new PepseGameManager().run();
+        new PepseGameManager(TITLE).run();
         // TODO: Check position of numeric energy (size, location on screen)
     }
 }
