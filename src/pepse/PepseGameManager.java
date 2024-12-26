@@ -10,10 +10,7 @@ import danogl.gui.WindowController;
 import danogl.gui.rendering.TextRenderable;
 import danogl.util.Vector2;
 
-import pepse.world.Avatar;
-import pepse.world.Sky;
-import pepse.world.Terrain;
-import pepse.world.Block;
+import pepse.world.*;
 import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
 import pepse.world.daynight.SunHalo;
@@ -23,6 +20,8 @@ import pepse.world.trees.Fruit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * The main class for the game.
@@ -51,6 +50,7 @@ public class PepseGameManager extends GameManager {
 
     private Terrain terrain;
     private Avatar avatar;
+    private Vector2 windowDimensions;
 
     /**
      * Default constructor for the PepseGameManager.
@@ -61,23 +61,21 @@ public class PepseGameManager extends GameManager {
 
     /**
      * Creates the sky.
-     * @param windowDimensions The dimensions of the game window.
      */
-    private void createSky(Vector2 windowDimensions) {
+    private void createSky() {
         GameObject sky = Sky.create(windowDimensions);
         gameObjects().addGameObject(sky, Layer.BACKGROUND);
     }
 
     /**
      * Creates the terrain.
-     * @param windowDimensions The dimensions of the game window.
      */
-    private void createTerrain(Vector2 windowDimensions) {
+    private void createTerrain() {
         Terrain terrain = new Terrain(windowDimensions, 10);
         // Create terrain made of blocks based on the method createInRange
-        List<Block> blockList = terrain.createInRange(0, (int) windowDimensions.x());
+        List<GameObject> blockList = terrain.createInRange(0, (int) windowDimensions.x());
         // Add the blocks that make up the terrain to the static layer.
-        for (Block block : blockList) {
+        for (GameObject block : blockList) {
             gameObjects().addGameObject(block, Layer.STATIC_OBJECTS);
         }
         this.terrain = terrain;
@@ -85,18 +83,16 @@ public class PepseGameManager extends GameManager {
 
     /**
      * Creates the night.
-     * @param windowDimensions The dimensions of the game window.
      */
-    private void createNight(Vector2 windowDimensions) {
+    private void createNight() {
         GameObject night = Night.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE);
         gameObjects().addGameObject(night, Layer.FOREGROUND); // TODO: Verify layer later
     }
 
     /**
      * Creates the sun and its halo.
-     * @param windowDimensions The dimensions of the game window.
      */
-    private void createSunAndHalo(Vector2 windowDimensions) {
+    private void createSunAndHalo() {
         // Create the sun
         GameObject sun = Sun.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE);
         gameObjects().addGameObject(sun, Layer.BACKGROUND);
@@ -107,13 +103,10 @@ public class PepseGameManager extends GameManager {
 
     /**
      * Creates the avatar.
-     * @param windowDimensions The dimensions of the game window.
      * @param inputListener The input listener to use for getting user input.
      * @param imageReader The image reader to use for loading images.
      */
-    private void createAvatar(
-            Vector2 windowDimensions, UserInputListener inputListener, ImageReader imageReader
-    ) {
+    private void createAvatar(UserInputListener inputListener, ImageReader imageReader) {
         // Create the avatar at the middle of the screen
         float avatarXPosition = windowDimensions.x() / AVATAR_X_POS_RATIO;
         // Create the avatar slightly above the ground to prevent creation inside the ground
@@ -151,11 +144,8 @@ public class PepseGameManager extends GameManager {
      * (fruits and leaves) within the specified range of the game world.
      * <p></p>
      * Adds them to the appropriate game object layers.
-     *
-     * @param windowDimensions The dimensions of the game window, used to determine the range
-     *                         for flora creation.
      */
-    private void createFlora(Vector2 windowDimensions) {
+    private void createFlora() {
         Flora flora = new Flora(terrain::groundHeightAtX0, avatar::addEnergy, SECONDS_IN_A_DAY_CYCLE);
         // Create a map that maps trunks to its flora
         Map<GameObject, ArrayList<GameObject>> trees = flora.createInRange(0, (int) windowDimensions.x());
@@ -174,29 +164,51 @@ public class PepseGameManager extends GameManager {
     }
 
     /**
-     * Initializes the game objects.
-     * @param windowDimensions The dimensions of the game window.
-     *
-     * @see #createSky(Vector2)
-     * @see #createTerrain(Vector2)
-     * @see #createNight(Vector2)
-     * @see #createSunAndHalo(Vector2)
-     * @see #createAvatar(Vector2, UserInputListener, ImageReader)
-     * @see #createEnergyDisplay()
-     * @see #createFlora(Vector2)
+     * Creates and initializes cloud game objects within the game world.
+     * <p>
+     *      The created clouds contribute to the atmospheric appearance of the game,
+     *      enhancing visual realism and design aesthetics.
+     * </p>
      */
-    private void initGameObjects(
-            Vector2 windowDimensions,
-            UserInputListener inputListener,
-            ImageReader imageReader
-    ) {
-        createSky(windowDimensions); // create sky
-        createTerrain(windowDimensions); // create terrain
-        createNight(windowDimensions); // create night
-        createSunAndHalo(windowDimensions); // create sun and halo
-        createAvatar(windowDimensions, inputListener, imageReader); // create avatar
+    private void createCloud() {
+        Cloud cloudCreator = new Cloud(this::addGameObject, this::removeGameObject);
+        List<GameObject> cloud = cloudCreator.createInRange(0, (int) windowDimensions.x());
+        for (GameObject block : cloud) {
+            gameObjects().addGameObject(block, Layer.STATIC_OBJECTS);
+        }
+        avatar.addOnJumpComponent(cloudCreator.pourRain());
+    }
+
+    /**
+     * Initializes the game objects.
+     *
+     * @see #createSky()
+     * @see #createTerrain()
+     * @see #createNight()
+     * @see #createSunAndHalo()
+     * @see #createAvatar(UserInputListener, ImageReader)
+     * @see #createEnergyDisplay()
+     * @see #createFlora()
+     * @see #createCloud()
+     */
+    private void initGameObjects(UserInputListener inputListener, ImageReader imageReader) {
+        createSky(); // create sky
+        createTerrain(); // create terrain
+        createNight(); // create night
+        createSunAndHalo(); // create sun and halo
+        createAvatar(inputListener, imageReader); // create avatar
         createEnergyDisplay(); // create energy display
-        createFlora(windowDimensions); // create the flora of the game
+        createFlora(); // create the flora of the game
+        createCloud(); // create the cloud
+    }
+
+    private void addGameObject(GameObject gameObject, int layer) {
+        gameObjects().addGameObject(gameObject, layer);
+    }
+
+    private void removeGameObject(GameObject gameObject, int layer) {
+        System.out.println("Removed: " + gameObject.getTag() + " in layer " + layer);
+        gameObjects().removeGameObject(gameObject, layer);
     }
 
     /**
@@ -214,8 +226,8 @@ public class PepseGameManager extends GameManager {
             UserInputListener inputListener,
             WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
-
-        initGameObjects(windowController.getWindowDimensions(), inputListener, imageReader);
+        this.windowDimensions = windowController.getWindowDimensions();
+        initGameObjects(inputListener, imageReader);
     }
 
     /**
