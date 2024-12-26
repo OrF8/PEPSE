@@ -27,7 +27,7 @@ import java.util.function.BiConsumer;
 public class Cloud {
 
     // Cloud Constants
-    private static final double RAIN_CREATION_PROBABILITY = 0.3;
+    private static final double RAIN_CREATION_PROBABILITY = 0.4;
     private static final float BASE_CLOUD_HEIGHT = 100;
     private static final int CLOUD_X_MOVEMENT = 3;
     private static final String CLOUD_TAG = "cloud";
@@ -46,10 +46,13 @@ public class Cloud {
             List.of(1, 1, 1, 1, 1, 1, 1, 1)
     );
 
-    // Private field
-    private List<GameObject> cloud;
+    // Private final field
     private final BiConsumer<GameObject, Integer> addToGame;
     private final BiConsumer<GameObject, Integer> removeFromGame;
+
+    // Private fields
+    private List<GameObject> cloud;
+    private float mostLeftX;
 
     /**
      * Constructs a Cloud instance, which manages cloud-related behavior in the game.
@@ -81,6 +84,9 @@ public class Cloud {
         );
         block.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         block.setTag(CLOUD_TAG);
+        if (mostLeftX == 0 || mostLeftX > block.getTopLeftCorner().x()) {
+            mostLeftX = block.getTopLeftCorner().x();
+        }
         // Handle the movement of a cloud block across the screen
         new Transition<>(
                 block,
@@ -140,6 +146,10 @@ public class Cloud {
         }
         this.cloud = cloud;
         return cloud;
+    }
+
+    public float getMostLeftX() {
+        return mostLeftX;
     }
 
     /**

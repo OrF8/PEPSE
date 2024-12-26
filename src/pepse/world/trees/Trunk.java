@@ -26,17 +26,12 @@ class Trunk {
     private static final int TRUNK_COLOR_DELTA = 15;
     private static final Color BASE_TRUNK_COLOR = new Color(100, 50, 20);
 
-    // Private fields
-    private final Random random;
-
     /**
      * Constructs a new instance of the Trunk class.
      * This constructor initializes the internal random number generator
      * used for creating tree trunks with randomized characteristics, such as height.
      */
-    Trunk() {
-        this.random = new Random();
-    }
+    Trunk() {}
 
     /**
      * Creates a GameObject representing a tree trunk at the specified position.
@@ -51,17 +46,18 @@ class Trunk {
      * @return A GameObject representing the created tree trunk with specified properties.
      */
      GameObject create(Vector2 position) {
-        float treeHeight = random.nextInt(MIN_TREE_HEIGHT, MAX_TREE_HEIGHT) * Block.SIZE;
-        Vector2 topLeftCorner = Vector2.of(position.x(), position.y() - treeHeight);
-        Vector2 dimensions = Vector2.of(Block.SIZE, treeHeight);
-        GameObject trunk = new GameObject(
-                topLeftCorner,
-                dimensions,
-                new RectangleRenderable(ColorSupplier.approximateColor(BASE_TRUNK_COLOR, TRUNK_COLOR_DELTA))
-        );
-        trunk.physics().preventIntersectionsFromDirection(Vector2.ZERO);
-        trunk.physics().setMass(GameObjectPhysics.IMMOVABLE_MASS);
-        return trunk;
-    }
+         Random random = new Random((long) position.x());
+         float treeHeight = random.nextInt(MIN_TREE_HEIGHT, MAX_TREE_HEIGHT) * Block.SIZE;
+         Vector2 topLeftCorner = Vector2.of(position.x(), position.y() - treeHeight);
+         Vector2 dimensions = Vector2.of(Block.SIZE, treeHeight);
+         GameObject trunk = new GameObject(
+                 topLeftCorner,
+                 dimensions,
+                 new RectangleRenderable(ColorSupplier.approximateColor(BASE_TRUNK_COLOR, TRUNK_COLOR_DELTA))
+         );
+         trunk.physics().preventIntersectionsFromDirection(Vector2.ZERO);
+         trunk.physics().setMass(GameObjectPhysics.IMMOVABLE_MASS);
+         return trunk;
+     }
 
 }

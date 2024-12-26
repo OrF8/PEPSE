@@ -3,6 +3,7 @@ package pepse;
 import danogl.GameManager;
 import danogl.GameObject;
 import danogl.collisions.Layer;
+import danogl.components.Component;
 import danogl.components.CoordinateSpace;
 import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
@@ -22,6 +23,7 @@ import pepse.world.trees.Fruit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * The main class for the game.
@@ -39,18 +41,25 @@ import java.util.Map;
 public class PepseGameManager extends GameManager {
 
     private static final int SECONDS_IN_A_DAY_CYCLE = 30;
-    private static final int HALO_LAYER_VALUE = -150; // Sun layer is -100, set halo in front of it
+    private static final int HALO_LAYER = -150; // Sun layer is -100, set halo in front of it
     private static final int LEAF_LAYER = -50;
+    private static final int CLOUD_LAYER = -125;
     private static final float AVATAR_Y_POS_OFFSET = 100;
     private static final float AVATAR_X_POS_RATIO = 2;
     private static final String INITIAL_ENERGY_STRING = "100%";
     private static final String PERCENT = "%";
     private static final Vector2 ENERGY_DISPLAY_TOP_LEFT_CORNER = Vector2.of(10, 20);
     private static final Vector2 ENERGY_DISPLAY_DIMENSIONS = Vector2.of(50, 50);
+    private static final float OFFSET = 150;
 
+    private int seed;
+    private float outOfWindowThreshold;
     private Terrain terrain;
+    private Flora flora;
     private Avatar avatar;
     private Vector2 windowDimensions;
+    private List<Integer> layers;
+    private Component rainPourComponent;
 
     /**
      * Default constructor for the PepseGameManager.
@@ -67,18 +76,26 @@ public class PepseGameManager extends GameManager {
         gameObjects().addGameObject(sky, Layer.BACKGROUND);
     }
 
+    private boolean addIfLocationIsNotTaken(GameObject gameObject, int layer) {
+        for (GameObject obj : gameObjects()) {
+            if (obj.getCenter().equals(gameObject.getCenter())) {
+                return false;
+            }
+        }
+        gameObjects().addGameObject(gameObject, layer);
+        return true;
+    }
+
     /**
      * Creates the terrain.
      */
-    private void createTerrain() {
-        Terrain terrain = new Terrain(windowDimensions, 10);
+    private void createTerrain(int rangeStart, int rangeEnd) {
         // Create terrain made of blocks based on the method createInRange
-        List<GameObject> blockList = terrain.createInRange(0, (int) windowDimensions.x());
+        List<GameObject> blockList = terrain.createInRange(rangeStart, rangeEnd);
         // Add the blocks that make up the terrain to the static layer.
         for (GameObject block : blockList) {
-            gameObjects().addGameObject(block, Layer.STATIC_OBJECTS);
+            addIfLocationIsNotTaken(block, Layer.STATIC_OBJECTS);
         }
-        this.terrain = terrain;
     }
 
     /**
@@ -98,7 +115,7 @@ public class PepseGameManager extends GameManager {
         gameObjects().addGameObject(sun, Layer.BACKGROUND);
         // Create its halo
         GameObject sunHalo = SunHalo.create(sun);
-        gameObjects().addGameObject(sunHalo, HALO_LAYER_VALUE);
+        gameObjects().addGameObject(sunHalo, HALO_LAYER);
     }
 
     /**
@@ -110,7 +127,7 @@ public class PepseGameManager extends GameManager {
         // Create the avatar at the middle of the screen
         float avatarXPosition = windowDimensions.x() / AVATAR_X_POS_RATIO;
         // Create the avatar slightly above the ground to prevent creation inside the ground
-        float avatarYPosition = terrain.groundHeightAtX0(avatarXPosition) - AVATAR_Y_POS_OFFSET; // TODO: Check later
+        float avatarYPosition = terrain.groundHeightAt(avatarXPosition) - AVATAR_Y_POS_OFFSET; // TODO: Check later
 
         Avatar avatar = new Avatar(
                 Vector2.of(avatarXPosition, avatarYPosition),
@@ -154,19 +171,19 @@ public class PepseGameManager extends GameManager {
      * <p></p>
      * Adds them to the appropriate game object layers.
      */
-    private void createFlora() {
-        Flora flora = new Flora(terrain::groundHeightAtX0, avatar::addEnergy, SECONDS_IN_A_DAY_CYCLE);
+    private void createFlora(int rangeStart, int rangeEnd) {
         // Create a map that maps trunks to its flora
-        Map<GameObject, ArrayList<GameObject>> trees = flora.createInRange(0, (int) windowDimensions.x());
+        Map<GameObject, ArrayList<GameObject>> trees = flora.createInRange(rangeStart, rangeEnd);
         // Add each trunk to the game.
         for (GameObject trunk : trees.keySet()) {
-            gameObjects().addGameObject(trunk, Layer.STATIC_OBJECTS);
-            // For each trunk, add its flora (fruits and foliage) to the game.
-            for (GameObject obj : trees.get(trunk)) {
-                if (obj.getTag().equals(Fruit.FRUIT_TAG)) { // If the object is a fruit
-                    gameObjects().addGameObject(obj, Layer.DEFAULT);
-                } else { // If the object is a leaf
-                    gameObjects().addGameObject(obj, LEAF_LAYER);
+            if (addIfLocationIsNotTaken(trunk, Layer.STATIC_OBJECTS)) {
+                // For each trunk, add its flora (fruits and foliage) to the game.
+                for (GameObject obj : trees.get(trunk)) {
+                    if (obj.getTag().equals(Fruit.FRUIT_TAG)) { // If the object is a fruit
+                        gameObjects().addGameObject(obj, Layer.DEFAULT);
+                    } else { // If the object is a leaf
+                        gameObjects().addGameObject(obj, LEAF_LAYER);
+                    }
                 }
             }
         }
@@ -180,43 +197,85 @@ public class PepseGameManager extends GameManager {
      * </p>
      */
     private void createCloud() {
-        Cloud cloudCreator = new Cloud(this::addGameObject, this::removeGameObject);
+        Cloud cloudCreator = new Cloud(gameObjects()::addGameObject, gameObjects()::removeGameObject);
+        this.rainPourComponent = cloudCreator.pourRain();
         List<GameObject> cloud = cloudCreator.createInRange(0, (int) windowDimensions.x());
-        for (GameObject block : cloud) {
-            gameObjects().addGameObject(block, Layer.STATIC_OBJECTS);
+        for (GameObject cloudBlock : cloud) {
+            gameObjects().addGameObject(cloudBlock, CLOUD_LAYER);
+            cloudBlock.addComponent(
+                    delta -> {
+                        if (cloudCreator.getMostLeftX() > windowDimensions.x()) {
+                            gameObjects().removeGameObject(cloudBlock, CLOUD_LAYER);
+                            avatar.removeOnJumpComponent(rainPourComponent);
+                        }
+                    }
+            );
         }
-        avatar.addOnJumpComponent(cloudCreator.pourRain());
+        avatar.addOnJumpComponent(rainPourComponent);
     }
 
     /**
      * Initializes the game objects.
      *
      * @see #createSky()
-     * @see #createTerrain()
+     * @see #createTerrain(int, int)
      * @see #createNight()
      * @see #createSunAndHalo()
      * @see #createAvatar(UserInputListener, ImageReader)
      * @see #createEnergyDisplay()
-     * @see #createFlora()
+     * @see #createFlora(int, int)
      * @see #createCloud()
      */
     private void initGameObjects(UserInputListener inputListener, ImageReader imageReader) {
+        this.terrain = new Terrain(windowDimensions, seed);
         createSky(); // create sky
-        createTerrain(); // create terrain
+        createTerrain(0, (int) windowDimensions.x()); // create terrain
         createNight(); // create night
         createSunAndHalo(); // create sun and halo
         createAvatar(inputListener, imageReader); // create avatar
+        this.flora = new Flora(terrain::groundHeightAt, avatar::addEnergy, SECONDS_IN_A_DAY_CYCLE, seed);
+        createFlora(0, (int) windowDimensions.x());
         createEnergyDisplay(); // create energy display
-        createFlora(); // create the flora of the game
         createCloud(); // create the cloud
     }
 
-    private void addGameObject(GameObject gameObject, int layer) {
-        gameObjects().addGameObject(gameObject, layer);
+    private void createLayerList() {
+        this.layers = new ArrayList<>();
+        layers.add(Layer.STATIC_OBJECTS);
+        layers.add(LEAF_LAYER);
+        layers.add(Layer.DEFAULT);
     }
 
-    private void removeGameObject(GameObject gameObject, int layer) {
-        gameObjects().removeGameObject(gameObject, layer);
+    private boolean isOutOfScreen(GameObject gameObject) {
+        return Math.abs(
+                gameObject.getCenter().x() - avatar.getCenter().x()
+        ) > outOfWindowThreshold;
+    }
+
+    private void handleOutOfScreenObjects() {
+        for (GameObject gameObject : gameObjects()) {
+            if (isOutOfScreen(gameObject)) {
+                for (int layer : layers) {
+                    if (gameObjects().removeGameObject(gameObject, layer)) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void createObjectsInScreen() {
+        int avatarX = (int) avatar.getCenter().x();
+        int windowWidth = (int) windowDimensions.x();
+        createTerrain(avatarX - windowWidth, avatarX + windowWidth);
+        createFlora(avatarX - windowWidth, avatarX + windowWidth);
+    }
+
+    @Override
+    public void update(float deltaTime) {
+        super.update(deltaTime);
+        handleOutOfScreenObjects();
+        createObjectsInScreen();
     }
 
     /**
@@ -235,6 +294,9 @@ public class PepseGameManager extends GameManager {
             WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
         this.windowDimensions = windowController.getWindowDimensions();
+        this.outOfWindowThreshold = windowDimensions.x() / AVATAR_X_POS_RATIO + OFFSET;
+        this.seed = new Random().nextInt();
+        createLayerList();
         initGameObjects(inputListener, imageReader);
     }
 

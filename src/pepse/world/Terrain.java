@@ -1,7 +1,6 @@
 package pepse.world;
 
 import danogl.GameObject;
-import danogl.components.CoordinateSpace;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
@@ -31,10 +30,15 @@ public class Terrain {
     public static final String BLOCK_TAG = "ground";
 
     // Terrain constants
-    private static final Color BASE_BACKGROUND_COLOR = new Color(212, 123, 74); // block color
     private static final float TWO_THIRDS_FACTOR = 2 / 3f;
     private final float groundHeightAtX0; // TODO: Is it supposed to be final?
+    private static final int OFFSET = 100;
     private static final int TERRAIN_DEPTH = 20;
+    private static final double NOISE_GENERATION_FACTOR = 1;
+    private static final Color BASE_BACKGROUND_COLOR = new Color(212, 123, 74); // block color
+
+    // Private fields
+    private final NoiseGenerator perlinNoiseGenerator;
 
     /**
      * Constructor for the Terrain class.
@@ -43,7 +47,7 @@ public class Terrain {
      */
     public Terrain (Vector2 windowDimensions, int seed) {
         groundHeightAtX0 = windowDimensions.y() * TWO_THIRDS_FACTOR;
-        // TODO: Use seed when getting to infinite world part
+        this.perlinNoiseGenerator = new NoiseGenerator(seed, (int) windowDimensions.x());
     }
 
     /**
@@ -51,9 +55,9 @@ public class Terrain {
      * @param x The x position.
      * @return The height of the ground at the given x position.
      */
-    public float groundHeightAtX0(float x) {
-        return groundHeightAtX0;
-        // TODO: Think of something more complicated later on
+    public float groundHeightAt(float x) {
+        float generatedNoise = (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR);
+        return groundHeightAtX0 * generatedNoise + groundHeightAtX0 + OFFSET;
     }
 
     /**
@@ -71,7 +75,7 @@ public class Terrain {
         // Add blocks at increasing X positions to the list
         for (int x = startX; x < maxX; x += Block.SIZE) {
 
-            float y = (float) Math.floor(groundHeightAtX0(x) / Block.SIZE) * Block.SIZE;
+            float y = (float) Math.floor(groundHeightAt(x) / Block.SIZE) * Block.SIZE;
 
             for (int i = 0; i < TERRAIN_DEPTH; i++) {
 
