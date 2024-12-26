@@ -18,7 +18,7 @@ public class NoiseGenerator {
 	 */
 	public NoiseGenerator(double seed,int startPoint) {
 		this.seed = seed;
-		this.startPoint =startPoint;
+		this.startPoint = startPoint;
 		init();
 	}
 
