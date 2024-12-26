@@ -204,20 +204,18 @@ public class Avatar extends GameObject {
      * Adds the specified component to the list of components that are activated when the avatar jumps.
      *
      * @param component The component to be added to the on-jump components list.
-     * @return True if the component was successfully added, false otherwise.
      */
-    public boolean addOnJumpComponent(Component component) {
-        return onJumpComponents.add(component);
+    public void addOnJumpComponent(Component component) {
+        onJumpComponents.add(component);
     }
 
     /**
      * Removes the specified component from the list of components activated when the avatar jumps.
      *
      * @param component The component to be removed from the list of on-jump components.
-     * @return True if the component was successfully removed from the list, false otherwise.
      */
-    public boolean removeOnJumpComponent(Component component) {
-        return onJumpComponents.remove(component);
+    public void removeOnJumpComponent(Component component) {
+        onJumpComponents.remove(component);
     }
 
     /**

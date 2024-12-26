@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -36,9 +37,10 @@ public class Flora {
 
     // Private fields
     private final float fruitRespawnCycleLength;
+    private final int seed;
     private final UnaryOperator<Float> floatFunction;
     private final Consumer<Double> fruitCollisionCallback;
-    private final Random random;
+    private Random random;
 
     /**
      * Constructs a new Flora instance responsible for creating and managing
@@ -50,12 +52,12 @@ public class Flora {
     public Flora(
             UnaryOperator<Float> floatFunction,
             Consumer<Double> fruitCollisionCallback,
-            float fruitRespawnCycleLength
+            float fruitRespawnCycleLength, int seed
     ) {
         this.fruitRespawnCycleLength = fruitRespawnCycleLength;
+        this.seed = seed;
         this.floatFunction = floatFunction;
         this.fruitCollisionCallback = fruitCollisionCallback;
-        this.random = new Random();
     }
 
     /**
@@ -110,6 +112,7 @@ public class Flora {
             // For each row of leaves, place a leaf at increasing X positions based on shouldAddLeaf's result.
             for (int col = 0, objX = startingObjX; col < FOLIAGE_WIDTH; col++, objX += Block.SIZE) {
                 Vector2 topLeftCorner = Vector2.of(objX, objY);
+                random = new Random(Objects.hash(topLeftCorner.x(), topLeftCorner.y(), seed));
                 if (shouldAddLeaf()) { // Add the leaf to the leave list.
                     Leaf leafCreator = new Leaf();
                     GameObject leaf = leafCreator.create(topLeftCorner);
@@ -146,6 +149,7 @@ public class Flora {
         maxX = LocationCalculator.getClosestMultToBlockSize(maxX);
 
         for (; trunkXPos < maxX; trunkXPos += Block.SIZE) { // Plant trees in the given range
+            random = new Random(Objects.hash(trunkXPos, seed));
             if (shouldPlantTree()) {
                 Vector2 trunkPosition = Vector2.of(trunkXPos, floatFunction.apply((float) trunkXPos));
                 GameObject trunk = trunkCreator.create(trunkPosition);
