@@ -1,0 +1,53 @@
+noam.kimhi,or_forshmit8
+322678947,327795464
+
+--------------------------------------------------------------------------------------------------------------
+
+# QUESTION 1 - The classes in the package pepse.world.tree:
+
+We handled the creation of trees in the world using 3 classes with the following responsibilities:
+(*) Trunk - This class is responsible for creating the trunk of a tree at a given position. Defines the range
+            of trunk heights and decides the height of a tree on a random basis.
+
+(*) Leaf - Responsible for creating a single leaf object in the game at a given position and color.
+
+(*) Flora - This class handles the logic behind generating trunks and leaves. This is done by the method
+            createInRange which gets a range of X positions to plant trees in. First, a trunk is positioned
+            at a random X location based on a threshold. For each trunk the function creates a foliage - list
+            of leaves that are also created on a random basis inside a grid around the trunk.
+            This data structure is then passed to the caller, in our case the PepseGameManager,that adds each
+            trunk and its foliage to the relevant layers in the game.
+
+--------------------------------------------------------------------------------------------------------------
+
+# QUESTION 2 - Relationships between classes in package pepse.world.tree:
+
+The trunk is not familiar with the concept of a leaf, and neither does the leaf know about its trunk, the
+class Flora is responsible for the coordination between the two, and acts as a container for trunks and their
+foliage (list of leaves). The trunk and the leaves do not take care of their own positioning inside the game,
+the entire logic of trunks and leaves placement is handled inside Flora class.
+
+In order to create trunks at reasonable locations, we needed to get an idea of where the ground starts.
+We could potentially have Flora directly ask for groundHeightAtX0 from the Class Terrain, but this will
+further complicate the dependencies in the program where in fact Flora only needs a minor detail which
+does not require for it to know the entire class Terrain. Therefore, we decided to pass a callback from
+PepseGameManager to Flora, in order to let this class get the ground height without knowing what a Terrain is.
+That way, Flora can easily plant trunks at reasonable locations based on ground height.
+
+--------------------------------------------------------------------------------------------------------------
+
+# QUESTION 3 - Design Patterns we used in the package pepse.world.tree:
+// TODO: look for ways to implement with design patterns
+--------------------------------------------------------------------------------------------------------------
+
+TODO: delete this when we are done
+Layers:
+-200 Sky (BACKGROUND)
+-200 Sun (BACKGROUND)
+-150 Halo (CUSTOM LAYER)
+-100 Terrain (STATIC)
+-100 Trunk (STATIC)
+-50 Leaf (CUSTOM LAYER)
+0 Avatar (DEFAULT)
+100 Night (FOREGROUND)
+200 Energy Display (UI)
