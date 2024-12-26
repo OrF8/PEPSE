@@ -245,25 +245,27 @@ public class Avatar extends GameObject {
     /**
      * Updates the avatar's position and energy value.
      * <p>
-     *     The avatar's position is updated based on the user's input.
-     *     The avatar's energy value is updated based on the user's input.
-     *     <li>
-     *         If the user is pressing the left or right arrow keys and the energy value is sufficient,
-     *         the avatar moves in the corresponding direction and consumes 0.5 a point of energy.
-     *     </li>
-     *     <li>
-     *         If the user is pressing both keys, the avatar does not move and does not consume energy.
-     *     </li>
-     *     <li>
-     *         If the user is pressing the space key and the energy value is sufficient,
-     *         the avatar jumps and consumes 10 points of energy.
-     *         The avatar can only jump if it is on the ground.
+     *      The avatar's position is updated based on the user's input.
+     *      The avatar's energy value is updated based on the user's input.
+     * </p>
+     * <ul>
+     *      <li>
+     *          If the user is pressing the left or right arrow keys and the energy value is sufficient,
+     *          the avatar moves in the corresponding direction and consumes 0.5 a point of energy.
+     *      </li>
+     *      <li>
+     *          If the user is pressing both keys, the avatar does not move and does not consume energy.
+     *      </li>
+     *      <li>
+     *          If the user is pressing the space key and the energy value is sufficient,
+     *          the avatar jumps and consumes 10 points of energy.
+     *          The avatar can only jump if it is on the ground.
      *      </li>
      *      <li>
      *          If the user is not pressing any keys and the energy value is less than 100,
      *          the energy value increases by 1 point.
      *      </li>
-     * </p>
+     * </ul>
      * @param deltaTime The time since the last update.
      */
     @Override

@@ -20,6 +20,13 @@ public class Sky {
     private static final String SKY_TAG = "sky";
 
     /**
+     * Default constructor for the Sky class.
+     * Initializes an instance of the Sky class, which is responsible for managing
+     * the creation of the sky GameObject that covers the entire game window.
+     */
+    public Sky() {}
+
+    /**
      * Creates a sky GameObject.
      * The sky is a GameObject that is a rectangle that covers the entire window.
      * @param windowDimensions The dimensions of the window.
