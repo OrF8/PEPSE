@@ -16,10 +16,11 @@ import java.awt.Color;
  */
 public class Night {
 
+    // Night constants
     private static final float MIDNIGHT_OPACITY = 0.5f;
     private static final float DAY_OPACITY = 0;
-    private static final String NIGHT = "night";
     private static final float HALF_FACTOR = 0.5f;
+    private static final String NIGHT = "night";
 
     /**
      * Creates a new instance of the Night class.

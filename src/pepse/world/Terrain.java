@@ -27,6 +27,7 @@ public class Terrain {
      */
     public static final String BLOCK_TAG = "ground";
 
+    // Terrain constants
     private static final Color BASE_BACKGROUND_COLOR = new Color(212, 123, 74); // block color
     private static final float TWO_THIRDS_FACTOR = 2 / 3f;
     private final float groundHeightAtX0; // TODO: Is it supposed to be final?

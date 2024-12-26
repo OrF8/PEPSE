@@ -17,9 +17,10 @@ import java.awt.Color;
  */
 public class SunHalo {
 
-    private static final Color BASIC_HALO_COLOR = new Color(255, 255, 0, 20);
-    private static final String SUN_HALO_TAG = "sunHalo";
+    // SunHalo constants
     private static final int SUN_HALO_FACTOR = 2;
+    private static final String SUN_HALO_TAG = "sunHalo";
+    private static final Color BASIC_HALO_COLOR = new Color(255, 255, 0, 20);
 
     /**
      * Default constructor for the SunHalo class.

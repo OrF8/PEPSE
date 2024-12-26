@@ -18,8 +18,9 @@ import java.util.Random;
  * @author Noam Kimhi
  * @author Or Forshmit
  */
-public class Leaf {
+class Leaf {
 
+    // Leaf constants
     private static final float INITIAL_LEAF_ANGLE = -10;
     private static final float FINAL_LEAF_ANGLE = 10;
     private static final float LEAF_TRANSITION_TIME_IN_SECONDS = 2;
@@ -28,6 +29,7 @@ public class Leaf {
     private static final Vector2 DIMENSIONS_GROWTH = Vector2.of(3, 3);
     private static final Vector2 dimensions = Vector2.of(Block.SIZE, Block.SIZE);
 
+    // Private fields
     private final Random random;
     private GameObject leaf;
 
@@ -36,7 +38,7 @@ public class Leaf {
      * This constructor initializes the Leaf class and allows for the creation
      * of leaf objects with predefined characteristics.
      */
-    public Leaf() {
+    Leaf() {
         random = new Random();
     }
 
@@ -89,7 +91,7 @@ public class Leaf {
      * @param position The top-left corner of the newly created leaf GameObject.
      * @return A GameObject representing a leaf with predefined size and color.
      */
-    public GameObject create(Vector2 position) {
+    GameObject create(Vector2 position) {
         GameObject leaf =  new GameObject(
                 position,
                 dimensions,
