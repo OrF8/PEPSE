@@ -117,9 +117,9 @@ public class Cloud {
         List<List<Integer>> blockPositions = cloudOne ? blockPositionsCloudOne : blockPositionsCloudTwo;
         // Set up a starting and ending X position for the cloud
         int startingX = LocationCalculator.getClosestMultToBlockSize(minX) -
-                        Block.SIZE * blockPositions.getFirst().size();
+                        Block.SIZE * blockPositions.get(0).size();
         maxX = LocationCalculator.getClosestMultToBlockSize(maxX) +
-               Block.SIZE * blockPositions.getFirst().size();
+               Block.SIZE * blockPositions.get(0).size();
         List<GameObject> cloud = new ArrayList<>();
 
         // Create cloud blocks according to the blockPositions list
@@ -224,6 +224,8 @@ public class Cloud {
             transform().setAccelerationY(GRAVITY); // Set raindrop's gravity
             this.setTag(RAIN_DROP_TAG); // Set raindrop's tag
             addToGame.accept(this, Layer.BACKGROUND); // Add the raindrop to the game
+            this.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES
+            );
 
             // Handle the change in opaqueness. Upon reaching final value, remove from the game
             new Transition<>(
