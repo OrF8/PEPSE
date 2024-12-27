@@ -126,7 +126,7 @@ public class Flora {
             // For each row of leaves, place a leaf at increasing X positions based on shouldAddLeaf's result.
             for (int col = 0, objX = startingObjX; col < FOLIAGE_WIDTH; col++, objX += Block.SIZE) {
                 Vector2 topLeftCorner = Vector2.of(objX, objY);
-                random = new Random(Objects.hash(objX, objY, seed));
+                random = new Random(Objects.hash(topLeftCorner.x(), topLeftCorner.y(), seed));
                 if (shouldAddLeaf()) { // Add the leaf to the leave list.
                     Leaf leafCreator = new Leaf();
                     GameObject leaf = leafCreator.create(topLeftCorner);
