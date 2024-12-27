@@ -112,11 +112,11 @@ public class Flora {
      *
      * @param trunkXPos The x-coordinate of the trunk position.
      * @param trunkYPos The y-coordinate of the trunk's top position.
-     * @return An {@code ArrayList<GameObject>} containing the foliage
+     * @return An {@code List<GameObject>} containing the foliage
      *         (leaves and fruits) created for the tree.
      */
-    private ArrayList<GameObject> createFoliage(int trunkXPos, int trunkYPos) {
-        ArrayList<GameObject> foliage = new ArrayList<>();
+    private List<GameObject> createFoliage(int trunkXPos, int trunkYPos) {
+        List<GameObject> foliage = new ArrayList<>();
         int startingObjY = trunkYPos - FOLIAGE_HEIGHT / HALF_DIVISION_FACTOR * Block.SIZE;
         // Create foliage in a grid of size (FOLIAGE_HEIGHT x FOLIAGE_WIDTH).
         for (int row = 0, objY = startingObjY; row < FOLIAGE_HEIGHT; row++, objY += Block.SIZE) {

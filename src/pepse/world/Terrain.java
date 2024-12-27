@@ -34,7 +34,7 @@ public class Terrain {
     private final float groundHeightAtX0; /* i.e., the height of the ground at x = 0 */ // TODO: Is it supposed to be final?
     private static final int OFFSET = 100; /* Offset for the ground height */
     private static final int TERRAIN_DEPTH = 20; /* The depth of the terrain */
-    private static final double NOISE_GENERATION_FACTOR = 1; /* The factor for the noise generation */
+    private static final double NOISE_GENERATION_FACTOR = 0.25; /* The factor for the noise generation */
     /* The base color of the terrain blocks */
     private static final Color BASE_BACKGROUND_COLOR = new Color(212, 123, 74);
 
