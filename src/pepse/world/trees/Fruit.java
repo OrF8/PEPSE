@@ -27,13 +27,19 @@ public class Fruit extends GameObject {
      */
     public static final String FRUIT_TAG = "Fruit";
 
-    // Fruit constants
+    // Private constants
+    /* The amount of energy that the fruit provides to the avatar upon collision. */
     private static final double FRUIT_ENERGY_VALUE = 10;
+    /* The base color of the fruit. */
     private static final Color BASE_FRUIT_COLOR = new Color(67, 45, 159);
+    /* The renderable object representing the fruit. */
     private static final Renderable fruitRenderable = new OvalRenderable(BASE_FRUIT_COLOR);
 
     // Private fields
+    /* The time interval (in seconds)
+    after which the fruit should reappear following a collision or disappearance. */
     private final float respawnCycleLength;
+    /* The action to perform when the fruit collides with an avatar. */
     private final Consumer<Double> collisionAction;
 
     /**

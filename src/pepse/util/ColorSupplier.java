@@ -8,8 +8,11 @@ import java.util.Random;
  * @author Dan Nirel
  */
 public final class ColorSupplier {
+
+    // Private constants
+    /* The default color delta for the approximateColor methods. */
     private static final int DEFAULT_COLOR_DELTA = 10;
-    private final static Random random = new Random();
+    private final static Random random = new Random(); /* A random number generator. */
 
     /**
      * Constructs a new ColorSupplier instance.

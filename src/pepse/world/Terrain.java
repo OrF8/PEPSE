@@ -29,16 +29,17 @@ public class Terrain {
      */
     public static final String BLOCK_TAG = "ground";
 
-    // Terrain constants
-    private static final float TWO_THIRDS_FACTOR = 2 / 3f;
-    private final float groundHeightAtX0; // TODO: Is it supposed to be final?
-    private static final int OFFSET = 100;
-    private static final int TERRAIN_DEPTH = 20;
-    private static final double NOISE_GENERATION_FACTOR = 1;
-    private static final Color BASE_BACKGROUND_COLOR = new Color(212, 123, 74); // block color
+    // Private constants
+    private static final float TWO_THIRDS_FACTOR = 2 / 3f; /* i.e., the ratio of the ground height at x = 0 */
+    private final float groundHeightAtX0; /* i.e., the height of the ground at x = 0 */ // TODO: Is it supposed to be final?
+    private static final int OFFSET = 100; /* Offset for the ground height */
+    private static final int TERRAIN_DEPTH = 20; /* The depth of the terrain */
+    private static final double NOISE_GENERATION_FACTOR = 1; /* The factor for the noise generation */
+    /* The base color of the terrain blocks */
+    private static final Color BASE_BACKGROUND_COLOR = new Color(212, 123, 74);
 
-    // Private fields
-    private final NoiseGenerator perlinNoiseGenerator;
+    // Private final fields
+    private final NoiseGenerator perlinNoiseGenerator; /* The Perlin noise generator */
 
     /**
      * Constructor for the Terrain class.
@@ -58,6 +59,9 @@ public class Terrain {
     public float groundHeightAt(float x) {
         float generatedNoise = (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR);
         return groundHeightAtX0 * generatedNoise + groundHeightAtX0 + OFFSET;
+        /* Copilot's suggestion:
+        return groundHeightAtX0 + (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR) * OFFSET;
+         */
     }
 
     /**

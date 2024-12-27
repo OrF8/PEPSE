@@ -27,20 +27,22 @@ import java.util.function.UnaryOperator;
  */
 public class Flora {
 
-    // Flora constants
-    private static final double TREE_PLANTING_THRESHOLD = 0.1;
-    private static final double LEAF_PLACEMENT_THRESHOLD = 0.4;
-    private static final double FRUIT_PLACEMENT_THRESHOLD = 0.05;
-    private static final int FOLIAGE_HEIGHT = 8;
-    private static final int FOLIAGE_WIDTH = 8;
-    private static final int HALF_DIVISION_FACTOR = 2;
+    // Private constants
+    private static final double TREE_PLANTING_THRESHOLD = 0.1; /* 10% chance to plant a tree */
+    private static final double LEAF_PLACEMENT_THRESHOLD = 0.3; /* 30% chance to place a leaf */
+    private static final double FRUIT_PLACEMENT_THRESHOLD = 0.075; /* 7.5% chance to place a fruit */
+    private static final int FOLIAGE_HEIGHT = 8; /* Number of rows of leaves */
+    private static final int FOLIAGE_WIDTH = 8; /* Number of columns of leaves */
+    private static final int HALF_DIVISION_FACTOR = 2; /* Used for division by 2 */
+
+    // Private final fields
+    private final float fruitRespawnCycleLength; /* Time in seconds for a fruit to respawn */
+    private final int seed; /* Seed for random number generation */
+    private final UnaryOperator<Float> floatFunction; /* Function to calculate ground height */
+    private final Consumer<Double> fruitCollisionCallback; /* Callback for fruit collision */
 
     // Private fields
-    private final float fruitRespawnCycleLength;
-    private final int seed;
-    private final UnaryOperator<Float> floatFunction;
-    private final Consumer<Double> fruitCollisionCallback;
-    private Random random;
+    private Random random; /* Random number generator */
 
     /**
      * Constructs a new Flora instance responsible for creating and managing
@@ -48,6 +50,16 @@ public class Flora {
      *
      * @param floatFunction A function that calculates the ground height for a given
      *                      x-coordinate, used to determine where flora should be placed.
+     * @param fruitCollisionCallback A callback function to be called when a fruit collides with
+     *                               another object.
+     *                               The function should accept a double representing the x-coordinate
+     *                               of the collision.
+     *                               The function should not return anything.
+     *                               The function should not throw any exceptions.
+     *                               The function should not be null.
+     * @param fruitRespawnCycleLength The time in seconds it takes for
+     *                                a fruit to respawn after being collected.
+     * @param seed The seed used for random number generation.
      */
     public Flora(
             UnaryOperator<Float> floatFunction,
@@ -99,7 +111,8 @@ public class Flora {
      *
      * @param trunkXPos The x-coordinate of the trunk position.
      * @param trunkYPos The y-coordinate of the trunk's top position.
-     * @return An {@code ArrayList<GameObject>} containing the foliage (leaves & fruits) created for the tree.
+     * @return An {@code ArrayList<GameObject>} containing the foliage
+     *         (leaves and fruits) created for the tree.
      */
     private ArrayList<GameObject> createFoliage(int trunkXPos, int trunkYPos) {
         ArrayList<GameObject> foliage = new ArrayList<>();

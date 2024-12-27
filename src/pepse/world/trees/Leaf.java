@@ -20,18 +20,25 @@ import java.util.Random;
  */
 class Leaf {
 
-    // Leaf constants
-    private static final float INITIAL_LEAF_ANGLE = -10;
-    private static final float FINAL_LEAF_ANGLE = 10;
-    private static final float LEAF_TRANSITION_TIME_IN_SECONDS = 2;
+    // Private constants
+    private static final float INITIAL_LEAF_ANGLE = -10; /* The initial angle of the leaf */
+    private static final float FINAL_LEAF_ANGLE = 10; /* The final angle of the leaf */
+    /* The duration of the leaf transitions */
+    private static final float LEAF_TRANSITION_TIME_IN_SECONDS = 1.5f;
+    /* The delay bound for the scheduled tasks */
     private static final float SCHEDULED_TASK_DELAY_BOUND = 2;
+    /* The base color of the leaf */
     private static final Color BASE_LEAF_COLOR = new Color(50, 200, 30);
+    /* The growth factor for the leaf dimensions */
     private static final Vector2 DIMENSIONS_GROWTH = Vector2.of(3, 3);
+    /* The dimensions of the leaf */
     private static final Vector2 dimensions = Vector2.of(Block.SIZE, Block.SIZE);
 
+    // Private final fields
+    private final Random random; /* A random number generator */
+
     // Private fields
-    private final Random random;
-    private GameObject leaf;
+    private GameObject leaf; /* The leaf GameObject */
 
     /**
      * Constructs a new instance of the Leaf class.

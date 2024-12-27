@@ -40,32 +40,38 @@ import java.util.Random;
  */
 public class PepseGameManager extends GameManager {
 
-    private static final int SECONDS_IN_A_DAY_CYCLE = 30;
-    private static final int HALO_LAYER = -150; // Sun layer is -100, set halo in front of it
-    private static final int LEAF_LAYER = -50;
-    private static final int CLOUD_LAYER = -125;
-    private static final float AVATAR_Y_POS_OFFSET = 100;
-    private static final float AVATAR_X_POS_RATIO = 2;
-    private static final String INITIAL_ENERGY_STRING = "100%";
-    private static final String PERCENT = "%";
+    // Private constants
+    private static final int SECONDS_IN_A_DAY_CYCLE = 30; /* Number of seconds in a day-night cycle */
+    private static final int HALO_LAYER = -150; /* The layer of the sun halo, which is behind the sun */
+    private static final int LEAF_LAYER = -50; /* The layer of the leaves */
+    private static final int CLOUD_LAYER = -125; /* The layer of the clouds */
+    private static final float AVATAR_Y_POS_OFFSET = 100; /* The offset of the avatar from the ground */
+    private static final float AVATAR_X_POS_RATIO = 2; /* The ratio of the avatar's x position */
+    private static final float OFFSET = 150; /* The offset for the out of window threshold */
+    private static final String INITIAL_ENERGY_STRING = "100%"; /* The initial energy string */
+    private static final String PERCENT = "%"; /* The percent sign */
+    private static final String TITLE = "Ghosty PEPSENautics - The Game"; /* The title of the game */
+    /* The top left corner of the energy display */
     private static final Vector2 ENERGY_DISPLAY_TOP_LEFT_CORNER = Vector2.of(10, 20);
+    /* The dimensions of the energy display */
     private static final Vector2 ENERGY_DISPLAY_DIMENSIONS = Vector2.of(50, 50);
-    private static final float OFFSET = 150;
-    private static final String TITLE = "Ghosty PEPSENautics - The Game";
 
-    private int seed;
-    private float outOfWindowThreshold;
-    private Terrain terrain;
-    private Flora flora;
-    private Avatar avatar;
-    private Vector2 windowDimensions;
-    private List<Integer> layers;
-    private Component rainPourComponent;
+    // Private fields
+    private int seed; /* The seed for the random number generator */
+    private float outOfWindowThreshold; /* The threshold for objects out of the window */
+    private Terrain terrain; /* The terrain of the game */
+    private Flora flora; /* The flora of the game */
+    private Avatar avatar; /* The avatar of the game */
+    private Vector2 windowDimensions; /* The dimensions of the game window */
+    private List<Integer> layers; /* The layers that objects should be deleted from */
+    private Component rainPourComponent; /* The rain pour component */
 
     /**
      * Default constructor for the PepseGameManager.
      * Initializes a new instance of the game manager, managing the creation and maintenance of
      * various game elements.
+     *
+     * @param title The title of the game.
      */
     public PepseGameManager(String title) {
         super(title);
@@ -90,7 +96,10 @@ public class PepseGameManager extends GameManager {
     }
 
     /**
-     * Creates the terrain.
+     * Creates the terrain. The terrain will be created in the range [rangeStart, rangeEnd].
+     *
+     * @param rangeStart The start of the range to create the terrain.
+     * @param rangeEnd The end of the range to create the terrain.
      */
     private void createTerrain(int rangeStart, int rangeEnd) {
         // Create terrain made of blocks based on the method createInRange
@@ -174,6 +183,10 @@ public class PepseGameManager extends GameManager {
      * <p>
      *      Adds them to the appropriate game object layers.
      * </p>
+     * The flora will be created in the range [rangeStart, rangeEnd].
+     *
+     * @param rangeStart The start of the range to create the flora.
+     * @param rangeEnd The end of the range to create the flora.
      */
     private void createFlora(int rangeStart, int rangeEnd) {
         // Create a map that maps trunks to its flora
@@ -220,6 +233,9 @@ public class PepseGameManager extends GameManager {
 
     /**
      * Initializes the game objects.
+     *
+     * @param inputListener The input listener to use for getting user input.
+     * @param imageReader The image reader to use for loading images.
      *
      * @see #createSky()
      * @see #createTerrain(int, int)

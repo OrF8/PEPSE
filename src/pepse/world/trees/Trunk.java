@@ -20,10 +20,11 @@ import java.util.Random;
  */
 class Trunk {
 
-    // Trunk constants
-    private static final int MIN_TREE_HEIGHT = 4;
-    private static final int MAX_TREE_HEIGHT = 10;
-    private static final int TRUNK_COLOR_DELTA = 15;
+    // Private constants
+    private static final int MIN_TREE_HEIGHT = 4; /* Minimum tree height in blocks */
+    private static final int MAX_TREE_HEIGHT = 10; /* Maximum tree height in blocks */
+    private static final int TRUNK_COLOR_DELTA = 15; /* Maximum color difference between trunks */
+    /* Base color of tree trunks */
     private static final Color BASE_TRUNK_COLOR = new Color(100, 50, 20);
 
     /**
