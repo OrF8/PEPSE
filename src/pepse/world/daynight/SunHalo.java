@@ -17,9 +17,11 @@ import java.awt.Color;
  */
 public class SunHalo {
 
-    // SunHalo constants
+    // Private constants
+    /* The factor by which the sun halo is larger than the sun */
     private static final int SUN_HALO_FACTOR = 2;
-    private static final String SUN_HALO_TAG = "sunHalo";
+    private static final String SUN_HALO_TAG = "sunHalo"; /* The tag for the sun halo game object */
+    /* The basic color of the sun halo */
     private static final Color BASIC_HALO_COLOR = new Color(255, 255, 0, 20);
 
     /**

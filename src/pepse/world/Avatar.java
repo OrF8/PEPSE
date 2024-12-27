@@ -24,27 +24,33 @@ public class Avatar extends GameObject {
      */
     public static final String AVATAR_TAG = "avatar";
 
-    // Avatar constants
-    private static final int MAX_ENERGY_VALUE = 100;
-    private static final int JUMP_ENERGY_CONSUMPTION = 10;
+    // Private constants
+    private static final int MAX_ENERGY_VALUE = 100; /* The maximum energy value of the avatar */
+    private static final int JUMP_ENERGY_CONSUMPTION = 10; /* The energy consumed when the avatar jumps */
+    /* The rate at which the avatar's energy is regenerated */
     private static final int IDLE_ENERGY_REGENERATION_RATE = 1;
-    private static final int AVATAR_SIZE = 50;
-    private static final float VELOCITY_X = 400;
-    private static final float VELOCITY_Y = -650;
-    private static final float GRAVITY = 600;
+    private static final int AVATAR_SIZE = 50; /* The size of the avatar */
+    private static final float VELOCITY_X = 400; /* The x velocity of the avatar */
+    private static final float VELOCITY_Y = -650; /* The y velocity of the avatar */
+    private static final float GRAVITY = 600; /* The gravity value of the avatar */
+    /* The time between each jump and idle animation clip */
     private static final float TIME_BETWEEN_JUMP_IDLE_CLIPS = 0.35f;
-    private static final float TIME_BETWEEN_RUN_CLIPS = 0.15f;
+    private static final float TIME_BETWEEN_RUN_CLIPS = 0.15f; /* The time between each run animation clip */
+    /* The energy consumed when the avatar moves horizontally */
     private static final double HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION = 0.5;
 
     // Paths to animations
+    /* Paths to the images used in the idle animation */
     private static final String IDLE_0_ANIMATION_PATH = "assets\\idle_0.png";
     private static final String IDLE_1_ANIMATION_PATH = "assets\\idle_1.png";
     private static final String IDLE_2_ANIMATION_PATH = "assets\\idle_2.png";
     private static final String IDLE_3_ANIMATION_PATH = "assets\\idle_3.png";
+    /* Paths to the images used in the jump animation */
     private static final String JUMP_0_ANIMATION_PATH = "assets\\jump_0.png";
     private static final String JUMP_1_ANIMATION_PATH = "assets\\jump_1.png";
     private static final String JUMP_2_ANIMATION_PATH = "assets\\jump_2.png";
     private static final String JUMP_3_ANIMATION_PATH = "assets\\jump_3.png";
+    /* Paths to the images used in the run animation */
     private static final String RUN_0_ANIMATION_PATH = "assets\\run_0.png";
     private static final String RUN_1_ANIMATION_PATH = "assets\\run_1.png";
     private static final String RUN_2_ANIMATION_PATH = "assets\\run_2.png";
@@ -52,13 +58,16 @@ public class Avatar extends GameObject {
     private static final String RUN_4_ANIMATION_PATH = "assets\\run_4.png";
     private static final String RUN_5_ANIMATION_PATH = "assets\\run_5.png";
 
-    // Private fields
-    private final UserInputListener inputListener;
-    private double energy = MAX_ENERGY_VALUE;
-    private AnimationRenderable idleAnimationRenderable;
-    private AnimationRenderable runAnimationRenderable;
-    private AnimationRenderable jumpAnimationRenderable;
+    // Private final fields
+    private final UserInputListener inputListener; /* The input listener for the avatar */
+    /* The list of components that are activated when the avatar jumps */
     private final List<Component> onJumpComponents;
+
+    // Private fields
+    private double energy = MAX_ENERGY_VALUE; /* The energy value of the avatar */
+    private AnimationRenderable idleAnimationRenderable; /* The idle animation renderable */
+    private AnimationRenderable runAnimationRenderable; /* The run animation renderable */
+    private AnimationRenderable jumpAnimationRenderable; /* The jump animation renderable */
 
     /**
      * Constructor for the Avatar class.

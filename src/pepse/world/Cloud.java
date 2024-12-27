@@ -26,33 +26,36 @@ import java.util.function.BiConsumer;
  */
 public class Cloud {
 
-    // Cloud Constants
-    private static final double RAIN_CREATION_PROBABILITY = 0.4;
-    private static final float BASE_CLOUD_HEIGHT = 100;
-    private static final int CLOUD_X_MOVEMENT = 3;
-    private static final String CLOUD_TAG = "cloud";
+    // Private Constants
+    private static final double RAIN_CREATION_PROBABILITY = 0.4; /* 40% chance of raindrop creation */
+    private static final float BASE_CLOUD_HEIGHT = 100; /* The base height of the cloud */
+    private static final int CLOUD_X_MOVEMENT = 3; /* The horizontal movement speed of the cloud */
+    private static final String CLOUD_TAG = "cloud"; /* The tag for cloud GameObjects */
+    /* The base color of the cloud */
     private static final Color BASE_CLOUD_COLOR = new Color(255, 255, 255);
 
     // 2 variations of cloud shapes
-    private static final List<List<Integer>> blockPositionsCloudOne = List.of(
+    private static final List<List<Integer>> blockPositionsCloudOne = List.of( /* Cloud shape 1 - (4x11) */
             List.of(0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0),
             List.of(1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1),
             List.of(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
             List.of(0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
     );
-    private static final List<List<Integer>> blockPositionsCloudTwo = List.of(
+    private static final List<List<Integer>> blockPositionsCloudTwo = List.of( /* Cloud shape 2 - (3x8) */
             List.of(0, 0, 0, 1, 1, 1, 0, 0),
             List.of(0, 1, 1, 1, 1, 1, 1, 0),
             List.of(1, 1, 1, 1, 1, 1, 1, 1)
     );
 
     // Private final field
+    /* A BiConsumer function to add a GameObject to the game at a specified layer */
     private final BiConsumer<GameObject, Integer> addToGame;
+    /* A BiConsumer function to remove a GameObject from the game at a specified layer */
     private final BiConsumer<GameObject, Integer> removeFromGame;
 
     // Private fields
-    private List<GameObject> cloud;
-    private float mostLeftX;
+    private float mostLeftX; /* The leftmost x coordinate of the entire cloud */
+    private List<GameObject> cloud; /* The list of GameObject instances representing the cloud */
 
     /**
      * Constructs a Cloud instance, which manages cloud-related behavior in the game.
@@ -148,6 +151,10 @@ public class Cloud {
         return cloud;
     }
 
+    /**
+     * Returns the leftmost x coordinate of the entire cloud.
+     * @return the leftmost x coordinate for the entire cloud.
+     */
     public float getMostLeftX() {
         return mostLeftX;
     }
@@ -202,13 +209,14 @@ public class Cloud {
      */
     private static class RainDrop extends GameObject {
 
-        // Rain constants
-        private static final float SIZE = Block.SIZE / 3f;
-        private static final float GRAVITY = 300;
-        private static final float RAINDROP_FALL_DURATION = 2;
-        private static final float STARTING_OPACITY = 1;
-        private static final float ENDING_OPACITY = 0;
-        private static final String RAIN_DROP_TAG = "raindrop";
+        // Private constants
+        private static final float SIZE = Block.SIZE / 3f; /* The size of the raindrop */
+        private static final float GRAVITY = 300; /* The gravitational acceleration of the raindrop */
+        private static final float RAINDROP_FALL_DURATION = 2; /* The duration of the raindrop's fall */
+        private static final float STARTING_OPACITY = 1; /* The starting opacity of the raindrop */
+        private static final float ENDING_OPACITY = 0; /* The ending opacity of the raindrop */
+        private static final String RAIN_DROP_TAG = "raindrop"; /* The tag for raindrop GameObjects */
+        /* The color of the raindrop */
         private static final Color RAIN_COLOR = new Color(4, 137, 241);
 
         /**
