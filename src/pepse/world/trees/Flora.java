@@ -29,7 +29,7 @@ import java.util.function.UnaryOperator;
 public class Flora {
 
     // Private constants
-    private static final double TREE_PLANTING_THRESHOLD = 0.1; /* 10% chance to plant a tree */
+    private static final double TREE_PLANTING_THRESHOLD = 0.05; /* 10% chance to plant a tree */
     private static final double LEAF_PLACEMENT_THRESHOLD = 0.3; /* 30% chance to place a leaf */
     private static final double FRUIT_PLACEMENT_THRESHOLD = 0.075; /* 7.5% chance to place a fruit */
     private static final int FOLIAGE_HEIGHT = 8; /* Number of rows of leaves */
@@ -43,7 +43,7 @@ public class Flora {
     private final Consumer<Double> fruitCollisionCallback; /* Callback for fruit collision */
 
     // Private fields
-    private Random random; /* Random number generator */
+    private final Random random; /* Random number generator */
 
     /**
      * Constructs a new Flora instance responsible for creating and managing
@@ -71,6 +71,7 @@ public class Flora {
         this.seed = seed;
         this.floatFunction = floatFunction;
         this.fruitCollisionCallback = fruitCollisionCallback;
+        this.random = new Random();
     }
 
     /**
@@ -126,7 +127,7 @@ public class Flora {
             // For each row of leaves, place a leaf at increasing X positions based on shouldAddLeaf's result.
             for (int col = 0, objX = startingObjX; col < FOLIAGE_WIDTH; col++, objX += Block.SIZE) {
                 Vector2 topLeftCorner = Vector2.of(objX, objY);
-                random = new Random(Objects.hash(topLeftCorner.x(), topLeftCorner.y(), seed));
+                random.setSeed(Objects.hash(objX, objY, seed));
                 if (shouldAddLeaf()) { // Add the leaf to the leave list.
                     Leaf leafCreator = new Leaf();
                     GameObject leaf = leafCreator.create(topLeftCorner);
@@ -163,7 +164,7 @@ public class Flora {
         maxX = LocationCalculator.getClosestMultToBlockSize(maxX);
 
         for (; trunkXPos < maxX; trunkXPos += Block.SIZE) { // Plant trees in the given range
-            random = new Random(Objects.hash(trunkXPos, seed));
+            random.setSeed(Objects.hash(trunkXPos, seed));
             if (shouldPlantTree()) {
                 Vector2 trunkPosition = Vector2.of(trunkXPos, floatFunction.apply((float) trunkXPos));
                 GameObject trunk = trunkCreator.create(trunkPosition);
