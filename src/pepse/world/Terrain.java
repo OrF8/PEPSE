@@ -31,13 +31,13 @@ public class Terrain {
 
     // Private constants
     private static final float TWO_THIRDS_FACTOR = 2 / 3f; /* i.e., the ratio of the ground height at x = 0 */
-    private final float groundHeightAtX0; /* i.e., the height of the ground at x = 0 */ // TODO: Is it supposed to be final?
-    private static final int TERRAIN_DEPTH = 20; /* The depth of the terrain */
-    private static final double NOISE_GENERATION_FACTOR = Block.SIZE * 8; /* The factor for the noise generation */
+    private static final int TERRAIN_DEPTH = 25; /* The depth of the terrain */
+    private static final double NOISE_GENERATION_FACTOR = Block.SIZE * 6; /* The factor for the noise generation */
     /* The base color of the terrain blocks */
-    private static final Color BASE_BACKGROUND_COLOR = new Color(212, 123, 74);
+    private static final Color BASE_GROUND_COLOR = new Color(212, 123, 74);
 
     // Private final fields
+    private final float groundHeightAtX0; /* i.e., the height of the ground at x = 0 */
     private final NoiseGenerator perlinNoiseGenerator; /* The Perlin noise generator */
 
     /**
@@ -85,7 +85,7 @@ public class Terrain {
             for (int i = 0; i < TERRAIN_DEPTH; i++) {
 
                 Renderable blockRenderer = new RectangleRenderable(
-                        ColorSupplier.approximateColor(BASE_BACKGROUND_COLOR)
+                        ColorSupplier.approximateColor(BASE_GROUND_COLOR)
                 ); // Create a rectangle with approximate color
 
                 Block block = new Block(Vector2.of(x, y + i * Block.SIZE), blockRenderer);

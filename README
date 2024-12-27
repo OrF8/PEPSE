@@ -64,8 +64,13 @@ Layers:
 -100 Cloud (STATIC)
 -50 Leaf (CUSTOM LAYER)
 0 Avatar (DEFAULT)
+0 Fruit (DEFAULT)
 100 Night (FOREGROUND)
 200 Energy Display (UI)
+
+TODO: What do we recreate after deleting in update?
+- Terrain
+- Flora (Trunk, Leaf, Fruit)
 
 TODO: Places in the code that are seed based
 - Flora: creation of trunks, leaves, fruits -> needs a seed
