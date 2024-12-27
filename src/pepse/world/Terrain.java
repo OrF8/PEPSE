@@ -59,9 +59,10 @@ public class Terrain {
     public float groundHeightAt(float x) {
         float generatedNoise = (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR);
         return groundHeightAtX0 * generatedNoise + groundHeightAtX0 + OFFSET;
-        /* Copilot's suggestion:
+        /* Copilot suggests the following alternative:
         return groundHeightAtX0 + (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR) * OFFSET;
          */
+
     }
 
     /**

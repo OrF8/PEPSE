@@ -254,14 +254,13 @@ public class PepseGameManager extends GameManager {
      * @see #createCloud()
      */
     private void initGameObjects(UserInputListener inputListener, ImageReader imageReader) {
-        this.terrain = new Terrain(windowDimensions, seed);
+        this.terrain = new Terrain(windowDimensions, seed); // create terrain
         createSky(); // create sky
-        createTerrain(0, (int) windowDimensions.x()); // create terrain
         createNight(); // create night
         createSunAndHalo(); // create sun and halo
         createAvatar(inputListener, imageReader); // create avatar
+        // Create flora
         this.flora = new Flora(terrain::groundHeightAt, avatar::addEnergy, SECONDS_IN_A_DAY_CYCLE, seed);
-        createFlora(0, (int) windowDimensions.x());
         createEnergyDisplay(); // create energy display
         createCloud(); // create the cloud
     }
