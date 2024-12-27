@@ -221,7 +221,7 @@ public class PepseGameManager extends GameManager {
      */
     private void createCloud() {
         Cloud cloudCreator = new Cloud(gameObjects()::addGameObject, gameObjects()::removeGameObject);
-        // Create jump component for the avatar to activate upon jumping
+        // Create the jump component for the avatar to activate upon jumping
         this.rainPourComponent = cloudCreator.pourRain();
         // List of blocks to create a cloud
         List<GameObject> cloud = cloudCreator.createInRange(0, (int) windowDimensions.x());
@@ -283,7 +283,7 @@ public class PepseGameManager extends GameManager {
     private void handleOutOfScreenObjects() {
         for (GameObject gameObject : gameObjects()) {
             if (isOutOfScreen(gameObject)) {
-                // Try to remove the object from each layer (will do nothing is the layer is wrong)
+                // Try to remove the object from each layer (will do nothing if the layer is wrong)
                 for (int layer : layers) {
                     if (gameObjects().removeGameObject(gameObject, layer)) {
                         break;
