@@ -13,7 +13,8 @@ We handled the creation of trees in the world using 3 classes with the following
 (*) Leaf - Responsible for creating a single leaf object in the game at a given position and color. This is
            a package private class.
 
-(*) Fruit - Creates a collectable fruit that activates a consumer upon collision.
+(*) Fruit - Creates a collectable fruit that activates a consumer upon collision. This is a package private
+            class.
 
 (*) Flora - This class handles the logic behind generating trunks and their foliage and fruits. This is done
             by the method createInRange which gets a range of X positions to plant trees in. First, a trunk
@@ -21,9 +22,9 @@ We handled the creation of trees in the world using 3 classes with the following
             flora - list of leaves and fruits that are also created on a random basis inside a grid around
             the trunk. This data structure is then passed to the caller, in our case the PepseGameManager,
             that adds each trunk and its foliage to the relevant layers in the game. Since Flora handles the
-            entire creation of all the flora in the game, only the fruits are public (since they need to be
-            collected) and the rest of the components are package private. This increases the encapsulation
-            and single responsibility of each component of flora in the game.
+            entire creation of all the flora in the game, including trunk, leaves and fruits only Flora class
+            is public and can be accessed outside of tree package. This enhances encapsulation and single
+            responsibility of each class in this package. (See Question 3 for more explanation).
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -50,31 +51,11 @@ method upon collision.
 --------------------------------------------------------------------------------------------------------------
 
 # QUESTION 3 - Design Patterns we used in the package pepse.world.tree:
-// TODO: look for ways to implement with design patterns
+In this package we used a Façade to ease the creation of flora in the game. This package is built out of
+4 but only the class Flora is visible outside of the package. In this case, the user of the package is
+PepseGameManager, and instead of having to deal with the creation of trunks, leaves, fruits - it only has to
+call one public class - createInRange() which returns a data structure according to which the GameManager
+adds objects to the list game. As the manager of the game, PepseGameManager has to be aware that fruits exist
+because of their interaction with the avatar - but it doesn't have to take care of the logic behind their
+creation, and the same goes with trunks and leaves.
 --------------------------------------------------------------------------------------------------------------
-
-TODO: delete this when we are done
-Layers:
--200 Sky (BACKGROUND)
--200 Sun (BACKGROUND)
--200 Raindrops (BACKGROUND)
--150 Halo (CUSTOM LAYER)
--100 Terrain (STATIC)
--100 Trunk (STATIC)
--100 Cloud (STATIC)
--50 Leaf (CUSTOM LAYER)
-0 Avatar (DEFAULT)
-0 Fruit (DEFAULT)
-100 Night (FOREGROUND)
-200 Energy Display (UI)
-
-TODO: What do we recreate after deleting in update?
-- Terrain
-- Flora (Trunk, Leaf, Fruit)
-
-TODO: Places in the code that are seed based
-- Flora: creation of trunks, leaves, fruits -> needs a seed
-- Leaf: a random for the delay time of when to start rotating (does it need a seed?)
-- Trunk: trunk height is random -> needs a seed
-- Cloud: has randomness on which cloud type to create shape (do we need to recreate a cloud?)
-- Terrain: Already gets a seed :)

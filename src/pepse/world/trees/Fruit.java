@@ -19,13 +19,7 @@ import java.util.function.Consumer;
  * @author Noam Kimhi
  * @author Or Forshmit
  */
-public class Fruit extends GameObject {
-
-    /**
-     * A constant representing the tag for marking objects as fruits in the game.
-     * Used to differentiate and identify fruit objects by their specific tag.
-     */
-    public static final String FRUIT_TAG = "Fruit";
+class Fruit extends GameObject {
 
     // Private constants
     /* The amount of energy that the fruit provides to the avatar upon collision. */
@@ -51,13 +45,13 @@ public class Fruit extends GameObject {
      * @param respawnCycleLength The time interval (in seconds) after which the fruit should reappear
      *                           following a collision or disappearance.
      */
-    public Fruit(Vector2 topLeftCorner, Consumer<Double> collisionAction, float respawnCycleLength) {
+    Fruit(Vector2 topLeftCorner, Consumer<Double> collisionAction, float respawnCycleLength) {
         super(
                 topLeftCorner,
                 Vector2.of(Block.SIZE, Block.SIZE),
                 fruitRenderable
         );
-        this.setTag(FRUIT_TAG);
+        this.setTag(Flora.FRUIT_TAG);
         this.respawnCycleLength = respawnCycleLength;
         this.collisionAction = collisionAction;
     }

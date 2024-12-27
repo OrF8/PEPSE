@@ -18,7 +18,6 @@ import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
 import pepse.world.daynight.SunHalo;
 import pepse.world.trees.Flora;
-import pepse.world.trees.Fruit;
 
 import java.util.List;
 import java.util.Map;
@@ -202,7 +201,7 @@ public class PepseGameManager extends GameManager {
             if (addIfLocationIsNotTaken(trunk, Layer.STATIC_OBJECTS)) {
                 // For each trunk, add its flora (fruits and foliage) to the game.
                 for (GameObject obj : trees.get(trunk)) {
-                    if (obj.getTag().equals(Fruit.FRUIT_TAG)) { // If the object is a fruit
+                    if (obj.getTag().equals(Flora.FRUIT_TAG)) { // If the object is a fruit
                         addIfLocationIsNotTaken(obj, Layer.DEFAULT);
                     } else { // If the object is a leaf
                         addIfLocationIsNotTaken(obj, LEAF_LAYER);
