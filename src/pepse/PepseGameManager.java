@@ -285,6 +285,9 @@ public class PepseGameManager extends GameManager {
             if (isOutOfScreen(gameObject)) {
                 for (int layer : layers) {
                     if (gameObjects().removeGameObject(gameObject, layer)) {
+                        if (!gameObject.getTag().equals(Terrain.BLOCK_TAG)) {
+                            System.out.println("Removed object = " + gameObject.getTag());
+                        }
                         break;
                     }
                 }
@@ -295,13 +298,13 @@ public class PepseGameManager extends GameManager {
     /**
      * Creates objects in the screen.
      * Objects are created in the screen based on the avatar's position.
-     * The objects are created in the range [avatarX - windowWidth, avatarX + windowWidth].
+     * The objects are created in the range [avatarX - creationField, avatarX + creationField].
      */
     private void createObjectsInScreen() {
         int avatarX = (int) avatar.getCenter().x();
-        int windowWidth = (int) windowDimensions.x();
-        createTerrain(avatarX - windowWidth, avatarX + windowWidth);
-        createFlora(avatarX - windowWidth, avatarX + windowWidth);
+        int creationField = (int) (windowDimensions.x() / AVATAR_X_POS_RATIO + OFFSET);
+        createTerrain(avatarX - creationField, avatarX + creationField);
+        createFlora(avatarX - creationField, avatarX + creationField);
     }
 
     /**
@@ -334,7 +337,7 @@ public class PepseGameManager extends GameManager {
             WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
         this.windowDimensions = windowController.getWindowDimensions();
-        this.outOfWindowThreshold = windowDimensions.x() / AVATAR_X_POS_RATIO + OFFSET;
+        this.outOfWindowThreshold = windowDimensions.x();
         this.seed = new Random().nextInt();
         this.layers = List.of(Layer.STATIC_OBJECTS, LEAF_LAYER, Layer.DEFAULT);
         initGameObjects(inputListener, imageReader);

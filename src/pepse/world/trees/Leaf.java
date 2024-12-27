@@ -120,7 +120,7 @@ class Leaf {
                 false,
                 this::createDimensionsTransition
         );
-
+        leaf.setTag("leaf");
         return leaf;
     }
 }
