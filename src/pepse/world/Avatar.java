@@ -48,22 +48,22 @@ public class Avatar extends GameObject {
 
     // Paths to animations
     /* Paths to the images used in the idle animation */
-    private static final String IDLE_0_ANIMATION_PATH = "assets\\idle_0.png";
-    private static final String IDLE_1_ANIMATION_PATH = "assets\\idle_1.png";
-    private static final String IDLE_2_ANIMATION_PATH = "assets\\idle_2.png";
-    private static final String IDLE_3_ANIMATION_PATH = "assets\\idle_3.png";
+    private static final String IDLE_0_ANIMATION_PATH = "assets/idle_0.png";
+    private static final String IDLE_1_ANIMATION_PATH = "assets/idle_1.png";
+    private static final String IDLE_2_ANIMATION_PATH = "assets/idle_2.png";
+    private static final String IDLE_3_ANIMATION_PATH = "assets/idle_3.png";
     /* Paths to the images used in the jump animation */
-    private static final String JUMP_0_ANIMATION_PATH = "assets\\jump_0.png";
-    private static final String JUMP_1_ANIMATION_PATH = "assets\\jump_1.png";
-    private static final String JUMP_2_ANIMATION_PATH = "assets\\jump_2.png";
-    private static final String JUMP_3_ANIMATION_PATH = "assets\\jump_3.png";
+    private static final String JUMP_0_ANIMATION_PATH = "assets/jump_0.png";
+    private static final String JUMP_1_ANIMATION_PATH = "assets/jump_1.png";
+    private static final String JUMP_2_ANIMATION_PATH = "assets/jump_2.png";
+    private static final String JUMP_3_ANIMATION_PATH = "assets/jump_3.png";
     /* Paths to the images used in the run animation */
-    private static final String RUN_0_ANIMATION_PATH = "assets\\run_0.png";
-    private static final String RUN_1_ANIMATION_PATH = "assets\\run_1.png";
-    private static final String RUN_2_ANIMATION_PATH = "assets\\run_2.png";
-    private static final String RUN_3_ANIMATION_PATH = "assets\\run_3.png";
-    private static final String RUN_4_ANIMATION_PATH = "assets\\run_4.png";
-    private static final String RUN_5_ANIMATION_PATH = "assets\\run_5.png";
+    private static final String RUN_0_ANIMATION_PATH = "assets/run_0.png";
+    private static final String RUN_1_ANIMATION_PATH = "assets/run_1.png";
+    private static final String RUN_2_ANIMATION_PATH = "assets/run_2.png";
+    private static final String RUN_3_ANIMATION_PATH = "assets/run_3.png";
+    private static final String RUN_4_ANIMATION_PATH = "assets/run_4.png";
+    private static final String RUN_5_ANIMATION_PATH = "assets/run_5.png";
 
     // Private final fields
     private final UserInputListener inputListener; /* The input listener for the avatar */
