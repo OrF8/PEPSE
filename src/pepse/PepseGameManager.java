@@ -85,6 +85,13 @@ public class PepseGameManager extends GameManager {
         gameObjects().addGameObject(sky, Layer.BACKGROUND);
     }
 
+    /**
+     * Adds a game object to the game if the location is not taken.
+     * If the location is taken, the object is not added.
+     * @param gameObject The game object to add.
+     * @param layer The layer to add the object to.
+     * @return {@code true} if the object was added, {@code false} otherwise.
+     */
     private boolean addIfLocationIsNotTaken(GameObject gameObject, int layer) {
         for (GameObject obj : gameObjects()) {
             if (obj.getCenter().equals(gameObject.getCenter())) {
@@ -197,9 +204,9 @@ public class PepseGameManager extends GameManager {
                 // For each trunk, add its flora (fruits and foliage) to the game.
                 for (GameObject obj : trees.get(trunk)) {
                     if (obj.getTag().equals(Fruit.FRUIT_TAG)) { // If the object is a fruit
-                        gameObjects().addGameObject(obj, Layer.DEFAULT);
+                        addIfLocationIsNotTaken(obj, Layer.DEFAULT);
                     } else { // If the object is a leaf
-                        gameObjects().addGameObject(obj, LEAF_LAYER);
+                        addIfLocationIsNotTaken(obj, LEAF_LAYER);
                     }
                 }
             }
@@ -259,6 +266,10 @@ public class PepseGameManager extends GameManager {
         createCloud(); // create the cloud
     }
 
+    /**
+     * Creates a list of layers to delete objects from.
+     * The list is used to delete objects that are out of the window.
+     */
     private void createLayerList() {
         this.layers = new ArrayList<>();
         layers.add(Layer.STATIC_OBJECTS);
@@ -266,12 +277,22 @@ public class PepseGameManager extends GameManager {
         layers.add(Layer.DEFAULT);
     }
 
+    /**
+     * Checks if a game object is out of the screen.
+     * @param gameObject The game object to check.
+     * @return {@code true} if the game object is out of the screen, {@code false} otherwise.
+     */
     private boolean isOutOfScreen(GameObject gameObject) {
         return Math.abs(
                 gameObject.getCenter().x() - avatar.getCenter().x()
         ) > outOfWindowThreshold;
     }
 
+    /**
+     * Handles out of screen objects.
+     * If an object is out of the screen, it is removed from the game.
+     * The object is removed from the first layer it is found in.
+     */
     private void handleOutOfScreenObjects() {
         for (GameObject gameObject : gameObjects()) {
             if (isOutOfScreen(gameObject)) {
@@ -284,6 +305,11 @@ public class PepseGameManager extends GameManager {
         }
     }
 
+    /**
+     * Creates objects in the screen.
+     * Objects are created in the screen based on the avatar's position.
+     * The objects are created in the range [avatarX - windowWidth, avatarX + windowWidth].
+     */
     private void createObjectsInScreen() {
         int avatarX = (int) avatar.getCenter().x();
         int windowWidth = (int) windowDimensions.x();
@@ -291,6 +317,13 @@ public class PepseGameManager extends GameManager {
         createFlora(avatarX - windowWidth, avatarX + windowWidth);
     }
 
+    /**
+     * Updates the game.
+     * The method is responsible for updating the game state and handling game logic.
+     * It is called once per frame.
+     * The method updates the game objects, handles out of screen objects, and creates objects in the screen.
+     * @param deltaTime The time elapsed since the last frame in seconds.
+     */
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
