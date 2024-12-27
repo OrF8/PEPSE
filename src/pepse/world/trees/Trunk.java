@@ -58,6 +58,7 @@ class Trunk {
          );
          trunk.physics().preventIntersectionsFromDirection(Vector2.ZERO);
          trunk.physics().setMass(GameObjectPhysics.IMMOVABLE_MASS);
+         trunk.setTag("trunk");
          return trunk;
      }
 
