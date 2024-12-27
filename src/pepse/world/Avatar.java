@@ -103,7 +103,7 @@ public class Avatar extends GameObject {
                 imageReader.readImage(IDLE_2_ANIMATION_PATH, false),
                 imageReader.readImage(IDLE_3_ANIMATION_PATH, false)
         };
-        this.idleAnimationRenderable = new AnimationRenderable(clips, TIME_BETWEEN_RUN_CLIPS);
+        this.idleAnimationRenderable = new AnimationRenderable(clips, TIME_BETWEEN_JUMP_IDLE_CLIPS);
     }
 
     /**
@@ -141,7 +141,7 @@ public class Avatar extends GameObject {
                 imageReader.readImage(RUN_4_ANIMATION_PATH, false),
                 imageReader.readImage(RUN_5_ANIMATION_PATH, false)
         };
-        this.runAnimationRenderable = new AnimationRenderable(clips, TIME_BETWEEN_JUMP_IDLE_CLIPS);
+        this.runAnimationRenderable = new AnimationRenderable(clips, TIME_BETWEEN_RUN_CLIPS);
     }
 
     /**
