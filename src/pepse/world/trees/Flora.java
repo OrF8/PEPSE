@@ -6,6 +6,7 @@ import pepse.util.LocationCalculator;
 import pepse.world.Block;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -153,7 +154,7 @@ public class Flora {
      *         value is an {@code ArrayList<GameObject>} containing the foliage (leaves)
      *         associated with that tree.
      */
-    public Map<GameObject, ArrayList<GameObject>> createInRange(int minX, int maxX) {
+    public Map<GameObject, List<GameObject>> createInRange(int minX, int maxX) {
         Trunk trunkCreator = new Trunk();
         Map<GameObject, ArrayList<GameObject>> floraMap = new HashMap<>();
 
