@@ -1,38 +1,36 @@
 package pepse.util;
 
-/**
- * This class generates a smooth-noise function
- */
+import java.util.Random;
+
 public class NoiseGenerator {
+    private double seed;
+    private long default_size;
+    private int[] p;
+    private int[] permutation;
+    private double startPoint;
 
-	// Private final fields
-	private final double seed; /* The seed value used to initialize the noise generator */
-	private final double startPoint; /* The starting point used in generating noise */
+    /**
+     * The constructor of the NoiseGenerator class.
+     *
+     * @param seed can be anything you want (even 1234 or new Random().nextGaussian()).
+     *             This seed is the basis of the random generator, which
+     *             will draw upon it to generate pseudo-random noise.
+     *
+     * @param startPoint is a relative point that the noise will be generated from.
+     *                   In our case it should be your ground height at X0 (specified in
+     *                   ex4 when we talk about the terrain: 2.2.1).
+     *
+     */
+    public NoiseGenerator(double seed, int startPoint) {
+        this.seed = seed;
+        this.startPoint = startPoint;
+        init();
+    }
 
-	// Private fields
-	private int[] p; /* The permutation array used for generating noise */
-
-	/**
-	 * Constructs a new NoiseGenerator instance with the given seed and start point.
-	 *
-	 * @param seed The seed value to initialize the noise generator.
-	 * @param startPoint The starting point used in generating noise.
-	 */
-	public NoiseGenerator(double seed,int startPoint) {
-		this.seed = seed;
-		this.startPoint = startPoint;
-		init();
-	}
-
-	/**
-	 * Initializes the permutation array used for generating noise.
-	 * This method populates the internal permutation array `p` with a repeated set of predefined
-	 * values to enable methods to use a consistent permutation table for noise calculations.
-	 */
-	private void init() {
-		// Initialize the permutation array.
-		this.p = new int[512];
-        int[] permutation = new int[]{151, 160, 137, 91, 90, 15, 131, 13, 201,
+    private void init() {
+        // Initialize the permutation array.
+        this.p = new int[512];
+        this.permutation = new int[]{151, 160, 137, 91, 90, 15, 131, 13, 201,
                 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99,
                 37, 240, 21, 10, 23, 190, 6, 148, 247, 120, 234, 75, 0, 26,
                 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33, 88,
@@ -52,117 +50,89 @@ public class NoiseGenerator {
                 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254, 138, 236,
                 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66,
                 215, 61, 156, 180};
+        this.default_size = 35;
 
-		// Populate it
-		for (int i = 0; i < 256; i++) {
-			p[256 + i] = p[i] = permutation[i];
-		}
+        // Populate it
+        for (int i = 0; i < 256; i++) {
+            p[256 + i] = p[i] = permutation[i];
+        }
 
-	}
+    }
 
-	/**
-	 * Generates a noise value based on the given parameters using layered smooth noise functions.
-	 *
-	 * @param x The input value for which the noise is generated.
-	 * @param factor A scaling factor that modifies the resulting noise value.
-	 * @return A double representing the calculated noise value, scaled by the given factor.
-	 */
-	public double noise(double x,double factor) {
-		double value = 0.0;
-		double currentPoint = startPoint;
+    /**
+     * Noise is responsible to generate pseudo random noise according to the seed given upon constructing the object.
+     *
+     * @param x the wanted x to receive noise for (in our case, the x coordinate of the terrain you'd want to create).
+     * @param factor describes how large the noise should be (play with it, but BLOCK_SIZE *7 should be enough).
+     * @return returns a noise you should *add* to the groundHeightAtX0 you have.
+     *
+     * example:
+     * public float groundHeightAt(float x) {
+     *           float noise = (float) noiseGenerator.noise(x, BLOCK_SIZE *7);
+     *           return groundHeightAtX0 + noise;
+     *       }
+     *
+     */
+    public double noise(double x, double factor) {
+        double value = 0.0;
+        double currentPoint = startPoint;
 
-		while (currentPoint >= 1) {
-			value += smoothNoise((x / currentPoint)) * currentPoint;
-			currentPoint /= 2.0;
-		}
+        while (currentPoint >= 1) {
+            value += smoothNoise((x / currentPoint), 0, 0) * currentPoint;
+            currentPoint /= 2.0;
+        }
 
-		return value * factor / startPoint;
-	}
+        return value * factor / startPoint;
+    }
 
-	/**
-	 * Computes smooth noise for three-dimensional input coordinates, which is used
-	 * in generating procedural textures or terrains. This function blends noise values
-	 * from the surrounding points in the grid using fade and interpolation functions.
-	 *
-	 * @param x The x-coordinate for the noise generation.
-	 * @return A double representing the smooth noise value at the given x coordinate.
-	 */
-	private double smoothNoise(double x) {
-		// Offset each coordinate by the seed value
-		x += this.seed;
-		double y = this.seed;
-		double z = 0;
-		x += this.seed;
 
-		int X = (int) Math.floor(x) & 255; // FIND UNIT CUBE THAT
-		int Y = (int) Math.floor(y) & 255; // CONTAINS POINT.
-		int Z = (int) Math.floor(z) & 255;
+    private double smoothNoise(double x, double y, double z) {
+        // Offset each coordinate by the seed value
+        x += this.seed;
+        y += this.seed;
+        x += this.seed;
 
-		x -= Math.floor(x); // FIND RELATIVE X,Y,Z
-		y -= Math.floor(y); // OF POINT IN CUBE.
-		z -= Math.floor(z);
+        int X = (int) Math.floor(x) & 255; // FIND UNIT CUBE THAT
+        int Y = (int) Math.floor(y) & 255; // CONTAINS POINT.
+        int Z = (int) Math.floor(z) & 255;
 
-		double u = fade(x); // COMPUTE FADE CURVES
-		double v = fade(y); // FOR EACH OF X,Y,Z.
-		double w = fade(z);
+        x -= Math.floor(x); // FIND RELATIVE X,Y,Z
+        y -= Math.floor(y); // OF POINT IN CUBE.
+        z -= Math.floor(z);
 
-		int A = p[X] + Y;
-		int AA = p[A] + Z;
-		int AB = p[A + 1] + Z; // HASH COORDINATES OF
-		int B = p[X + 1] + Y;
-		int BA = p[B] + Z;
-		int BB = p[B + 1] + Z; // THE 8 CUBE CORNERS,
+        double u = fade(x); // COMPUTE FADE CURVES
+        double v = fade(y); // FOR EACH OF X,Y,Z.
+        double w = fade(z);
 
-		return lerp(w, lerp(v, lerp(u, grad(p[AA], 		x, 		y, 		z		), 	// AND ADD
-										grad(p[BA],		x - 1, 	y, 		z		)), // BLENDED
-								lerp(u, grad(p[AB], 	x, 		y - 1, 	z		), 	// RESULTS
-										grad(p[BB], 	x - 1, 	y - 1, 	z		))),// FROM 8
-						lerp(v, lerp(u, grad(p[AA + 1], x, 		y, 		z - 1	), 	// CORNERS
-										grad(p[BA + 1], x - 1, 	y, 		z - 1	)), // OF CUBE
-								lerp(u, grad(p[AB + 1], x, 		y - 1,	z - 1	),
-										grad(p[BB + 1], x - 1, 	y - 1, 	z - 1	))));
-	}
+        int A = p[X] + Y;
+        int AA = p[A] + Z;
+        int AB = p[A + 1] + Z; // HASH COORDINATES OF
+        int B = p[X + 1] + Y;
+        int BA = p[B] + Z;
+        int BB = p[B + 1] + Z; // THE 8 CUBE CORNERS,
 
-	/**
-	 * Applies the fade function to smooth transitions for a given input value.
-	 * This function is typically used in noise generation algorithms to create
-	 * smoother interpolations between values.
-	 *
-	 * @param t The input value to be transformed, typically in the range [0, 1].
-	 * @return A double representing the smoothed output value based on the input.
-	 */
-	private double fade(double t) {
-		return t * t * t * (t * (t * 6 - 15) + 10);
-	}
+        return lerp(w, lerp(v, lerp(u, grad(p[AA], x, y, z),    // AND ADD
+                                grad(p[BA], x - 1, y, z)), // BLENDED
+                        lerp(u, grad(p[AB], x, y - 1, z),    // RESULTS
+                                grad(p[BB], x - 1, y - 1, z))),// FROM 8
+                lerp(v, lerp(u, grad(p[AA + 1], x, y, z - 1),    // CORNERS
+                                grad(p[BA + 1], x - 1, y, z - 1)), // OF CUBE
+                        lerp(u, grad(p[AB + 1], x, y - 1, z - 1),
+                                grad(p[BB + 1], x - 1, y - 1, z - 1))));
+    }
 
-	/**
-	 * Performs a linear interpolation between two values based on a given factor.
-	 *
-	 * @param t The interpolation factor, typically between 0 and 1. A value of 0 returns `a`,
-	 *          and a value of 1 returns `b`.
-	 * @param a The starting value of the interpolation.
-	 * @param b The ending value of the interpolation.
-	 * @return The interpolated value between `a` and `b` based on the factor `t`.
-	 */
-	private double lerp(double t, double a, double b) {
-		return a + t * (b - a);
-	}
+    private double fade(double t) {
+        return t * t * t * (t * (t * 6 - 15) + 10);
+    }
 
-	/**
-	 * Computes the gradient vector based on the provided hash value and input coordinates.
-	 * The method uses the hash value to determine one of 12 gradient directions
-	 * and computes the dot product of the vector with the input coordinates.
-	 *
-	 * @param hash The hash value used to determine the gradient direction.
-	 * @param x The x-coordinate of the input point.
-	 * @param y The y-coordinate of the input point.
-	 * @param z The z-coordinate of the input point.
-	 * @return A double representing the gradient value based on the hash and input coordinates.
-	 */
-	private double grad(int hash, double x, double y, double z) {
-		int h = hash & 15; // CONVERT LO 4 BITS OF HASH CODE
-		double u = h < 8 ? x : y, // INTO 12 GRADIENT DIRECTIONS.
-		v = h < 4 ? y : h == 12 || h == 14 ? x : z;
-		return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
-	}
+    private double lerp(double t, double a, double b) {
+        return a + t * (b - a);
+    }
+
+    private double grad(int hash, double x, double y, double z) {
+        int h = hash & 15; // CONVERT LO 4 BITS OF HASH CODE
+        double u = h < 8 ? x : y, // INTO 12 GRADIENT DIRECTIONS.
+                v = h < 4 ? y : h == 12 || h == 14 ? x : z;
+        return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
+    }
 }
