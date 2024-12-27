@@ -11,6 +11,9 @@ import java.awt.Color;
 
 /**
  * This class is responsible for creating the sun game object.
+ *
+ * @author Noam Kimhi
+ * @author Or Forshmit
  */
 public class Sun {
 
@@ -45,7 +48,7 @@ public class Sun {
         Renderable sunRenderer = new OvalRenderable(Color.YELLOW);
         GameObject sun = new GameObject(Vector2.ZERO, SUN_SIZE, sunRenderer);
 
-        sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
+        sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES); // Set sun to follow camera
         sun.setTag(SUN_TAG);
 
         Vector2 initialSunCenter = windowDimensions.mult(HALF_FACTOR);
@@ -53,7 +56,7 @@ public class Sun {
                 windowDimensions.x() * HALF_FACTOR, windowDimensions.y() * TWO_THIRDS_FACTOR
         );
 
-        new Transition<>(
+        new Transition<>( // Make the sun rotate around the center of the screen
                 sun,
                 (Float angle) ->
                         sun.setCenter(initialSunCenter.subtract(cycleCenter).rotated(angle).add(cycleCenter)),

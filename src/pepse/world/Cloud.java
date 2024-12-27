@@ -11,7 +11,7 @@ import danogl.components.Component;
 import pepse.util.ColorSupplier;
 import pepse.util.LocationCalculator;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -27,7 +27,7 @@ import java.util.function.BiConsumer;
 public class Cloud {
 
     // Private Constants
-    private static final double RAIN_CREATION_PROBABILITY = 0.4; /* 40% chance of raindrop creation */
+    private static final double RAIN_CREATION_PROBABILITY = 0.4; /* chance of raindrop creation */
     private static final float BASE_CLOUD_HEIGHT = 100; /* The base height of the cloud */
     private static final int CLOUD_X_MOVEMENT = 3; /* The horizontal movement speed of the cloud */
     private static final String CLOUD_TAG = "cloud"; /* The tag for cloud GameObjects */
@@ -100,7 +100,9 @@ public class Cloud {
                 startingX,
                 maxX,
                 Transition.LINEAR_INTERPOLATOR_FLOAT,
-                Float.POSITIVE_INFINITY, // TODO: Check after inf. world
+                /* Cloud will be deleted iff it exited the screen, so we let it move infinitely as long
+                as it didn't and the avatar is following it */
+                Float.POSITIVE_INFINITY,
                 Transition.TransitionType.TRANSITION_ONCE,
                 null
         );

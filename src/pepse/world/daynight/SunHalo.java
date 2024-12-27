@@ -14,6 +14,8 @@ import java.awt.Color;
  * </p>
  *
  * @see Sun
+ * @author Noam Kimhi
+ * @author Or Forshmit
  */
 public class SunHalo {
 

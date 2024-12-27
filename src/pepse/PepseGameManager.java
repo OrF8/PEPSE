@@ -49,7 +49,7 @@ public class PepseGameManager extends GameManager {
     private static final float OFFSET = 150; /* The offset for the out of window threshold */
     private static final String INITIAL_ENERGY_STRING = "100%"; /* The initial energy string */
     private static final String PERCENT = "%"; /* The percent sign */
-    private static final String TITLE = "Ghosty PEPSENautics - The Game"; /* The title of the game */
+    private static final String TITLE = "Ghosty PEPSENautics - The Game"; /* The title of the game :) */
     /* The top left corner of the energy display */
     private static final Vector2 ENERGY_DISPLAY_TOP_LEFT_CORNER = Vector2.of(10, 20);
     /* The dimensions of the energy display */
@@ -121,7 +121,7 @@ public class PepseGameManager extends GameManager {
      */
     private void createNight() {
         GameObject night = Night.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE);
-        gameObjects().addGameObject(night, Layer.FOREGROUND); // TODO: Verify layer later
+        gameObjects().addGameObject(night, Layer.FOREGROUND);
     }
 
     /**
@@ -145,7 +145,7 @@ public class PepseGameManager extends GameManager {
         // Create the avatar at the middle of the screen
         float avatarXPosition = windowDimensions.x() / AVATAR_X_POS_RATIO;
         // Create the avatar slightly above the ground to prevent creation inside the ground
-        float avatarYPosition = terrain.groundHeightAt(avatarXPosition) - AVATAR_Y_POS_OFFSET; // TODO: Check later
+        float avatarYPosition = terrain.groundHeightAt(avatarXPosition) - AVATAR_Y_POS_OFFSET;
 
         Avatar avatar = new Avatar(
                 Vector2.of(avatarXPosition, avatarYPosition),
@@ -155,7 +155,7 @@ public class PepseGameManager extends GameManager {
         gameObjects().addGameObject(avatar, Layer.DEFAULT);
 
         // Make the camera follow the avatar
-        Vector2 distanceFromCenter = windowDimensions.mult(0.5f).add(
+        Vector2 distanceFromCenter = windowDimensions.mult(1 / AVATAR_X_POS_RATIO).add(
                 Vector2.of(-avatarXPosition, -avatarYPosition)
         );
         setCamera(new Camera(avatar, distanceFromCenter, windowDimensions, windowDimensions));
@@ -221,8 +221,12 @@ public class PepseGameManager extends GameManager {
      */
     private void createCloud() {
         Cloud cloudCreator = new Cloud(gameObjects()::addGameObject, gameObjects()::removeGameObject);
+        // Create jump component for the avatar to activate upon jumping
         this.rainPourComponent = cloudCreator.pourRain();
+        // List of blocks to create a cloud
         List<GameObject> cloud = cloudCreator.createInRange(0, (int) windowDimensions.x());
+        /* For each block, add to the game and remove the jump component from the avatar if the cloud left
+        the screen */
         for (GameObject cloudBlock : cloud) {
             gameObjects().addGameObject(cloudBlock, CLOUD_LAYER);
             cloudBlock.addComponent(
@@ -244,12 +248,10 @@ public class PepseGameManager extends GameManager {
      * @param imageReader The image reader to use for loading images.
      *
      * @see #createSky()
-     * @see #createTerrain(int, int)
      * @see #createNight()
      * @see #createSunAndHalo()
      * @see #createAvatar(UserInputListener, ImageReader)
      * @see #createEnergyDisplay()
-     * @see #createFlora(int, int)
      * @see #createCloud()
      */
     private void initGameObjects(UserInputListener inputListener, ImageReader imageReader) {
@@ -270,9 +272,7 @@ public class PepseGameManager extends GameManager {
      * @return {@code true} if the game object is out of the screen, {@code false} otherwise.
      */
     private boolean isOutOfScreen(GameObject gameObject) {
-        return Math.abs(
-                gameObject.getCenter().x() - avatar.getCenter().x()
-        ) > outOfWindowThreshold;
+        return Math.abs(gameObject.getCenter().x() - avatar.getCenter().x()) > outOfWindowThreshold;
     }
 
     /**
@@ -283,11 +283,9 @@ public class PepseGameManager extends GameManager {
     private void handleOutOfScreenObjects() {
         for (GameObject gameObject : gameObjects()) {
             if (isOutOfScreen(gameObject)) {
+                // Try to remove the object from each layer (will do nothing is the layer is wrong)
                 for (int layer : layers) {
                     if (gameObjects().removeGameObject(gameObject, layer)) {
-                        if (!gameObject.getTag().equals(Terrain.BLOCK_TAG)) {
-                            System.out.println("Removed object = " + gameObject.getTag());
-                        }
                         break;
                     }
                 }
@@ -303,6 +301,7 @@ public class PepseGameManager extends GameManager {
     private void createObjectsInScreen() {
         int avatarX = (int) avatar.getCenter().x();
         int creationField = (int) (windowDimensions.x() / AVATAR_X_POS_RATIO + OFFSET);
+        // Create terrain and flora in the given range
         createTerrain(avatarX - creationField, avatarX + creationField);
         createFlora(avatarX - creationField, avatarX + creationField);
     }
@@ -317,6 +316,7 @@ public class PepseGameManager extends GameManager {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
+        // Handle deletion and creation of objects in the game as the avatar moves
         handleOutOfScreenObjects();
         createObjectsInScreen();
     }
@@ -349,6 +349,5 @@ public class PepseGameManager extends GameManager {
      */
     public static void main(String[] args) {
         new PepseGameManager(TITLE).run();
-        // TODO: Check position of numeric energy (size, location on screen)
     }
 }

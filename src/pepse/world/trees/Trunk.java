@@ -51,14 +51,16 @@ class Trunk {
          float treeHeight = random.nextInt(MIN_TREE_HEIGHT, MAX_TREE_HEIGHT) * Block.SIZE;
          Vector2 topLeftCorner = Vector2.of(position.x(), position.y() - treeHeight);
          Vector2 dimensions = Vector2.of(Block.SIZE, treeHeight);
+
          GameObject trunk = new GameObject(
                  topLeftCorner,
                  dimensions,
                  new RectangleRenderable(ColorSupplier.approximateColor(BASE_TRUNK_COLOR, TRUNK_COLOR_DELTA))
          );
+
+         // Nothing can move/intersect with the trunk
          trunk.physics().preventIntersectionsFromDirection(Vector2.ZERO);
          trunk.physics().setMass(GameObjectPhysics.IMMOVABLE_MASS);
-         trunk.setTag("trunk");
          return trunk;
      }
 

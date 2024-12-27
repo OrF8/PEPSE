@@ -8,7 +8,7 @@ import pepse.util.ColorSupplier;
 import pepse.util.LocationCalculator;
 import pepse.util.NoiseGenerator;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class Terrain {
     // Private constants
     private static final float TWO_THIRDS_FACTOR = 2 / 3f; /* i.e., the ratio of the ground height at x = 0 */
     private static final int TERRAIN_DEPTH = 25; /* The depth of the terrain */
-    private static final double NOISE_GENERATION_FACTOR = Block.SIZE * 6; /* The factor for the noise generation */
+    private static final double NOISE_GENERATION_FACTOR = Block.SIZE * 6; /* Noise generation factor */
     /* The base color of the terrain blocks */
     private static final Color BASE_GROUND_COLOR = new Color(212, 123, 74);
 
@@ -56,11 +56,6 @@ public class Terrain {
      * @return The height of the ground at the given x position.
      */
     public float groundHeightAt(float x) {
-        /*float generatedNoise = (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR);
-        return groundHeightAtX0 * generatedNoise + groundHeightAtX0 + OFFSET; */
-        /* Copilot suggests the following alternative:
-        return groundHeightAtX0 + (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR) * OFFSET;
-         */
         float noise = (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR);
         return groundHeightAtX0 + noise;
     }
