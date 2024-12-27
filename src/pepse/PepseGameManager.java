@@ -20,7 +20,6 @@ import pepse.world.daynight.SunHalo;
 import pepse.world.trees.Flora;
 import pepse.world.trees.Fruit;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -197,7 +196,7 @@ public class PepseGameManager extends GameManager {
      */
     private void createFlora(int rangeStart, int rangeEnd) {
         // Create a map that maps trunks to its flora
-        Map<GameObject, ArrayList<GameObject>> trees = flora.createInRange(rangeStart, rangeEnd);
+        Map<GameObject, List<GameObject>> trees = flora.createInRange(rangeStart, rangeEnd);
         // Add each trunk to the game.
         for (GameObject trunk : trees.keySet()) {
             if (addIfLocationIsNotTaken(trunk, Layer.STATIC_OBJECTS)) {
@@ -263,17 +262,6 @@ public class PepseGameManager extends GameManager {
         this.flora = new Flora(terrain::groundHeightAt, avatar::addEnergy, SECONDS_IN_A_DAY_CYCLE, seed);
         createEnergyDisplay(); // create energy display
         createCloud(); // create the cloud
-    }
-
-    /**
-     * Creates a list of layers to delete objects from.
-     * The list is used to delete objects that are out of the window.
-     */
-    private void createLayerList() {
-        this.layers = new ArrayList<>();
-        layers.add(Layer.STATIC_OBJECTS);
-        layers.add(LEAF_LAYER);
-        layers.add(Layer.DEFAULT);
     }
 
     /**
@@ -348,7 +336,7 @@ public class PepseGameManager extends GameManager {
         this.windowDimensions = windowController.getWindowDimensions();
         this.outOfWindowThreshold = windowDimensions.x() / AVATAR_X_POS_RATIO + OFFSET;
         this.seed = new Random().nextInt();
-        createLayerList();
+        this.layers = List.of(Layer.STATIC_OBJECTS, LEAF_LAYER, Layer.DEFAULT);
         initGameObjects(inputListener, imageReader);
     }
 
