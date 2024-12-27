@@ -62,7 +62,6 @@ public class Terrain {
         /* Copilot suggests the following alternative:
         return groundHeightAtX0 + (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR) * OFFSET;
          */
-
     }
 
     /**
