@@ -68,17 +68,13 @@ class Fruit extends GameObject {
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);
-        if (other.getTag().equals(Avatar.AVATAR_TAG)) {
-            collisionAction.accept(FRUIT_ENERGY_VALUE);
-            // Make the fruit disappear
-            this.renderer().setRenderable(null);
-            // Make the fruit respawn after respawnCycleLength time has elapsed.
-            new ScheduledTask(
-                    this,
-                    this.respawnCycleLength,
-                    false,
-                    () -> this.renderer().setRenderable(fruitRenderable)
+        collisionAction.accept(FRUIT_ENERGY_VALUE);
+        // Make the fruit disappear
+        this.renderer().setRenderable(null);
+        // Make the fruit respawn after respawnCycleLength time has elapsed.
+        new ScheduledTask(
+                this, this.respawnCycleLength,
+                false, () -> this.renderer().setRenderable(fruitRenderable)
             );
-        }
     }
 }

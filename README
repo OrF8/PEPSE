@@ -30,14 +30,14 @@ We handled the creation of trees in the world using 3 classes with the following
 
 # QUESTION 2 - Relationships between classes in package pepse.world.tree:
 
-The trunk is not familiar with the concept of a leaf or a fruit, and neither do the leaf or the fruit know
+The trunk is not familiar with the concept of a leaf or a fruit, and neither do the leaf nor the fruit know
 about their trunk, the class Flora is responsible for the coordination between the components, and acts as a
 container for trunks and their foliage (leaves and fruits). The trunk, fruits and leaves do not take care of
 their own positioning inside the game, the entire logic of their placement is handled inside Flora class.
 
 Usage of callbacks:
 In order to create trunks at reasonable locations, we needed to get an idea of where the ground starts.
-We could potentially have Flora directly ask for groundHeightAtX0 from the Class Terrain, but this will
+We could potentially have Flora directly ask for groundHeightAt from the class Terrain, but this will
 further complicate the dependencies in the program where in fact Flora only needs a minor detail which
 does not require for it to know the entire class Terrain. Therefore, we decided to pass a callback from
 PepseGameManager to Flora, in order to let this class get the ground height without knowing what a Terrain is.
@@ -52,10 +52,16 @@ method upon collision.
 
 # QUESTION 3 - Design Patterns we used in the package pepse.world.tree:
 In this package we used a Façade to ease the creation of flora in the game. This package is built out of
-4 but only the class Flora is visible outside of the package. In this case, the user of the package is
-PepseGameManager, and instead of having to deal with the creation of trunks, leaves, fruits - it only has to
-call one public class - createInRange() which returns a data structure according to which the GameManager
+four classes but only the class Flora is visible outside of the package. In this case, the user of the package
+is PepseGameManager, and instead of having to deal with the creation of trunks, leaves, fruits - it only has
+to call one public class - createInRange() which returns a data structure according to which the GameManager
 adds objects to the list game. As the manager of the game, PepseGameManager has to be aware that fruits exist
 because of their interaction with the avatar - but it doesn't have to take care of the logic behind their
 creation, and the same goes with trunks and leaves.
+
+Despite the same nature this exercise has as exercise 2, this time we did not use strategies as interfaces,
+but as callbacks. The entire logic behind collisions and behaviors upon activating them is handled by simple
+callbacks that are passed from the GameManager to the Flora class. This way, the Flora class can activate the
+correct method upon collision without having to know what the other object is.
+
 --------------------------------------------------------------------------------------------------------------
