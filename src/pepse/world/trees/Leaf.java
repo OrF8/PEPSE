@@ -107,6 +107,7 @@ class Leaf {
 
         this.leaf = leaf;
 
+        // Make the leaves rotate in different delays
         new ScheduledTask(
                 leaf,
                 random.nextFloat(0, SCHEDULED_TASK_DELAY_BOUND),
@@ -114,13 +115,13 @@ class Leaf {
                 this::createAngleTransition
         );
 
+        // Make the leaves grow and shrink in different delays
         new ScheduledTask(
                 leaf,
                 random.nextFloat(0, SCHEDULED_TASK_DELAY_BOUND),
                 false,
                 this::createDimensionsTransition
         );
-        leaf.setTag("leaf");
         return leaf;
     }
 }

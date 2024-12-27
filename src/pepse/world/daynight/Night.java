@@ -13,6 +13,9 @@ import java.awt.Color;
  * that transitions between a transparent state (day) and an opaque state (midnight),
  * simulating a day-night cycle. The object follows the camera and alternates its
  * opacity over time based on the configured cycle length.
+ *
+ * @author Noam Kimhi
+ * @author Or Forshmit
  */
 public class Night {
 

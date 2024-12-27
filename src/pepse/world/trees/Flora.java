@@ -29,9 +29,9 @@ import java.util.function.UnaryOperator;
 public class Flora {
 
     // Private constants
-    private static final double TREE_PLANTING_THRESHOLD = 0.075; /* 10% chance to plant a tree */
-    private static final double LEAF_PLACEMENT_THRESHOLD = 0.3; /* 30% chance to place a leaf */
-    private static final double FRUIT_PLACEMENT_THRESHOLD = 0.05; /* 7.5% chance to place a fruit */
+    private static final double TREE_PLANTING_THRESHOLD = 0.075; /* chance to plant a tree */
+    private static final double LEAF_PLACEMENT_THRESHOLD = 0.3; /* chance to place a leaf */
+    private static final double FRUIT_PLACEMENT_THRESHOLD = 0.05; /* chance to place a fruit */
     private static final int FOLIAGE_HEIGHT = 8; /* Number of rows of leaves */
     private static final int FOLIAGE_WIDTH = 8; /* Number of columns of leaves */
     private static final int HALF_DIVISION_FACTOR = 2; /* Used for division by 2 */

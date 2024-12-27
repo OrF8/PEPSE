@@ -5,6 +5,9 @@ import pepse.world.Block;
 /**
  * The LocationCalculator class provides utility methods for calculating location-based values
  * in alignment with predefined block sizes.
+ *
+ * @author Noam Kimhi
+ * @author Or Forshmit
  */
 public final class LocationCalculator {
 

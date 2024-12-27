@@ -14,7 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The avatar class represents the player's character in the game.
+ * The Avatar class represents the main character in the game,
+ * providing functionality for animations, energy management, movement,
+ * and user interactions. The avatar's state (idle, running, jumping)
+ * is determined based on input from the user and is visually
+ * represented through animated renderables.
+ *
+ * @author Noam Kimhi
+ * @author Or Forshmit
  */
 public class Avatar extends GameObject {
 
@@ -155,19 +162,16 @@ public class Avatar extends GameObject {
         createRunAnimation(imageReader);
     }
 
-
-
     /**
      * Returns true if the avatar is idle, false otherwise.
      * @param isPressingLeft The boolean value of whether the left arrow key is pressed.
      * @param isPressingRight The boolean value of whether the right arrow key is pressed.
      * @param isPressingJump The boolean value of whether the space key is pressed.
-     * @return True if the avatar is idle, false otherwise.
+     * @return {@code true} if the avatar is idle, {@code false} otherwise.
      */
     private boolean isIdle(boolean isPressingLeft, boolean isPressingRight, boolean isPressingJump) {
         return (this.getVelocity().isZero() && !isPressingLeft && !isPressingRight && !isPressingJump) ||
                (this.getVelocity().isZero() && isPressingLeft && isPressingRight && !isPressingJump);
-        // TODO: After they answer in the forum, check if pressing left and right should move character to idle animation and regenerate energy
     }
 
     /**
@@ -178,12 +182,14 @@ public class Avatar extends GameObject {
      * @return The updated x velocity of the avatar.
      */
     private float handleHorizontalMovement(boolean isPressingLeft, boolean isPressingRight, float xVel) {
+        // Handle left movement, including energy consumption and animations
         if (isPressingLeft && !isPressingRight && energy >= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION) {
             xVel -= VELOCITY_X;
             energy -= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION;
             this.renderer().setIsFlippedHorizontally(true);
             this.renderer().setRenderable(runAnimationRenderable);
         }
+        // Handle right movement, including energy consumption and animations
         if (isPressingRight && !isPressingLeft && energy >= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION) {
             xVel += VELOCITY_X;
             energy -= HORIZONTAL_MOVEMENT_ENERGY_CONSUMPTION;
@@ -198,6 +204,7 @@ public class Avatar extends GameObject {
      * @param isPressingJump The boolean value of whether the space key is pressed.
      */
     private void handleJump(boolean isPressingJump) {
+        // Handle jump movement, including energy consumption and animations
         if (isPressingJump && getVelocity().y() == 0 && energy >= JUMP_ENERGY_CONSUMPTION) {
             transform().setVelocityY(VELOCITY_Y);
             energy -= JUMP_ENERGY_CONSUMPTION;
@@ -285,9 +292,12 @@ public class Avatar extends GameObject {
         super.update(deltaTime);
         float xVel = 0;
 
+        // Handle user movement input
         boolean isPressingLeft = inputListener.isKeyPressed(KeyEvent.VK_LEFT);
         boolean isPressingRight = inputListener.isKeyPressed(KeyEvent.VK_RIGHT);
         boolean isPressingJump = inputListener.isKeyPressed(KeyEvent.VK_SPACE);
+
+        // boolean representing idle state for the avatar
         boolean isIdle = isIdle(isPressingLeft, isPressingRight, isPressingJump);
 
         xVel = handleHorizontalMovement(isPressingLeft, isPressingRight, xVel);
