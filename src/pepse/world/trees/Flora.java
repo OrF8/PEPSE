@@ -151,12 +151,12 @@ public class Flora {
      * @param minX The minimum x-coordinate of the range.
      * @param maxX The maximum x-coordinate of the range.
      * @return A map where the key is a {@code GameObject} representing the trunk of a tree, and the
-     *         value is an {@code ArrayList<GameObject>} containing the foliage (leaves)
+     *         value is a {@code List<GameObject>} containing the foliage (leaves and fruits)
      *         associated with that tree.
      */
     public Map<GameObject, List<GameObject>> createInRange(int minX, int maxX) {
         Trunk trunkCreator = new Trunk();
-        Map<GameObject, ArrayList<GameObject>> floraMap = new HashMap<>();
+        Map<GameObject, List<GameObject>> floraMap = new HashMap<>();
 
         // Calculate the position of trunks based on Block.SIZE to ensure alignment.
         int trunkXPos = LocationCalculator.getClosestMultToBlockSize(minX);
