@@ -203,9 +203,9 @@ public class PepseGameManager extends GameManager {
                 // For each trunk, add its flora (fruits and foliage) to the game.
                 for (GameObject obj : trees.get(trunk)) {
                     if (obj.getTag().equals(Fruit.FRUIT_TAG)) { // If the object is a fruit
-                        addIfLocationIsNotTaken(obj, Layer.DEFAULT);
+                        gameObjects().addGameObject(obj, Layer.DEFAULT);
                     } else { // If the object is a leaf
-                        addIfLocationIsNotTaken(obj, LEAF_LAYER);
+                        gameObjects().addGameObject(obj, LEAF_LAYER);
                     }
                 }
             }
