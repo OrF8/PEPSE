@@ -1,13 +1,22 @@
 package pepse.util;
 
-import java.util.Random;
-
+/**
+ * This class is responsible for generating pseudo-random noise.
+ * It is based on the Perlin noise algorithm.
+ * <p>
+ *     The Perlin noise algorithm is a type of gradient noise developed by Ken Perlin in 1983.
+ *     It is widely used in computer graphics for applications such as procedural texture generation.
+ *     It is also frequently used to generate terrain heightmaps.
+ *     The algorithm is based on the concept of smoothly interpolating between random values.
+ *     The result is a smooth, continuous noise function that can be used to generate a variety of effects.
+ * </p>
+ *
+ * @author OOP Course staff @ HUJI (67125) TASHPA (2025) SEM A
+ */
 public class NoiseGenerator {
-    private double seed;
-    private long default_size;
+    private final double seed;
     private int[] p;
-    private int[] permutation;
-    private double startPoint;
+    private final double startPoint;
 
     /**
      * The constructor of the NoiseGenerator class.
@@ -17,7 +26,7 @@ public class NoiseGenerator {
      *             will draw upon it to generate pseudo-random noise.
      *
      * @param startPoint is a relative point that the noise will be generated from.
-     *                   In our case it should be your ground height at X0 (specified in
+     *                   In our case, it should be your ground height at X0 (specified in
      *                   ex4 when we talk about the terrain: 2.2.1).
      *
      */
@@ -27,10 +36,13 @@ public class NoiseGenerator {
         init();
     }
 
+    /**
+     * Initializes the permutation array.
+     */
     private void init() {
         // Initialize the permutation array.
         this.p = new int[512];
-        this.permutation = new int[]{151, 160, 137, 91, 90, 15, 131, 13, 201,
+        int[] permutation = new int[]{151, 160, 137, 91, 90, 15, 131, 13, 201,
                 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99,
                 37, 240, 21, 10, 23, 190, 6, 148, 247, 120, 234, 75, 0, 26,
                 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33, 88,
@@ -50,7 +62,6 @@ public class NoiseGenerator {
                 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254, 138, 236,
                 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66,
                 215, 61, 156, 180};
-        this.default_size = 35;
 
         // Populate it
         for (int i = 0; i < 256; i++) {
@@ -65,43 +76,48 @@ public class NoiseGenerator {
      * @param x the wanted x to receive noise for (in our case, the x coordinate of the terrain you'd want to create).
      * @param factor describes how large the noise should be (play with it, but BLOCK_SIZE *7 should be enough).
      * @return returns a noise you should *add* to the groundHeightAtX0 you have.
-     *
-     * example:
-     * public float groundHeightAt(float x) {
+     * <p>
+     *      example:
+     *      public float groundHeightAt(float x) {
      *           float noise = (float) noiseGenerator.noise(x, BLOCK_SIZE *7);
      *           return groundHeightAtX0 + noise;
      *       }
-     *
+     * </p>
      */
     public double noise(double x, double factor) {
         double value = 0.0;
         double currentPoint = startPoint;
 
         while (currentPoint >= 1) {
-            value += smoothNoise((x / currentPoint), 0, 0) * currentPoint;
+            value += smoothNoise((x / currentPoint)) * currentPoint;
             currentPoint /= 2.0;
         }
 
         return value * factor / startPoint;
     }
 
-
-    private double smoothNoise(double x, double y, double z) {
+    /**
+     * This method is responsible for generating the smooth noise.
+     * @param x the x coordinate to generate the noise for.
+     * @return the smooth noise value.
+     */
+    private double smoothNoise(double x) {
         // Offset each coordinate by the seed value
         x += this.seed;
-        y += this.seed;
+        double y = this.seed;
+        double z = 0;
         x += this.seed;
 
         int X = (int) Math.floor(x) & 255; // FIND UNIT CUBE THAT
         int Y = (int) Math.floor(y) & 255; // CONTAINS POINT.
         int Z = (int) Math.floor(z) & 255;
 
-        x -= Math.floor(x); // FIND RELATIVE X,Y,Z
+        x -= Math.floor(x); // FIND RELATIVE X, Y, Z
         y -= Math.floor(y); // OF POINT IN CUBE.
         z -= Math.floor(z);
 
         double u = fade(x); // COMPUTE FADE CURVES
-        double v = fade(y); // FOR EACH OF X,Y,Z.
+        double v = fade(y); // FOR EACH OF X, Y, Z.
         double w = fade(z);
 
         int A = p[X] + Y;
@@ -121,14 +137,34 @@ public class NoiseGenerator {
                                 grad(p[BB + 1], x - 1, y - 1, z - 1))));
     }
 
+    /**
+     * This method is responsible for generating the fade value.
+     * @param t the value to fade.
+     * @return the faded value.
+     */
     private double fade(double t) {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
+    /**
+     * This method is responsible for generating the linear interpolation value.
+     * @param t the value to interpolate.
+     * @param a the first value to interpolate.
+     * @param b the second value to interpolate.
+     * @return the interpolated value.
+     */
     private double lerp(double t, double a, double b) {
         return a + t * (b - a);
     }
 
+    /**
+     * This method is responsible for generating the gradient value.
+     * @param hash the hash value.
+     * @param x the x coordinate.
+     * @param y the y coordinate.
+     * @param z the z coordinate.
+     * @return the gradient value.
+     */
     private double grad(int hash, double x, double y, double z) {
         int h = hash & 15; // CONVERT LO 4 BITS OF HASH CODE
         double u = h < 8 ? x : y, // INTO 12 GRADIENT DIRECTIONS.
