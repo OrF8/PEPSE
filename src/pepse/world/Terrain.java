@@ -32,9 +32,8 @@ public class Terrain {
     // Private constants
     private static final float TWO_THIRDS_FACTOR = 2 / 3f; /* i.e., the ratio of the ground height at x = 0 */
     private final float groundHeightAtX0; /* i.e., the height of the ground at x = 0 */ // TODO: Is it supposed to be final?
-    private static final int OFFSET = 100; /* Offset for the ground height */
     private static final int TERRAIN_DEPTH = 20; /* The depth of the terrain */
-    private static final double NOISE_GENERATION_FACTOR = 0.25; /* The factor for the noise generation */
+    private static final double NOISE_GENERATION_FACTOR = Block.SIZE * 8; /* The factor for the noise generation */
     /* The base color of the terrain blocks */
     private static final Color BASE_BACKGROUND_COLOR = new Color(212, 123, 74);
 
@@ -48,7 +47,7 @@ public class Terrain {
      */
     public Terrain (Vector2 windowDimensions, int seed) {
         groundHeightAtX0 = windowDimensions.y() * TWO_THIRDS_FACTOR;
-        this.perlinNoiseGenerator = new NoiseGenerator(seed, (int) windowDimensions.x());
+        this.perlinNoiseGenerator = new NoiseGenerator(seed, (int) groundHeightAtX0);
     }
 
     /**
@@ -57,11 +56,13 @@ public class Terrain {
      * @return The height of the ground at the given x position.
      */
     public float groundHeightAt(float x) {
-        float generatedNoise = (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR);
-        return groundHeightAtX0 * generatedNoise + groundHeightAtX0 + OFFSET;
+        /*float generatedNoise = (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR);
+        return groundHeightAtX0 * generatedNoise + groundHeightAtX0 + OFFSET; */
         /* Copilot suggests the following alternative:
         return groundHeightAtX0 + (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR) * OFFSET;
          */
+        float noise = (float) perlinNoiseGenerator.noise(x, NOISE_GENERATION_FACTOR);
+        return groundHeightAtX0 + noise;
     }
 
     /**
