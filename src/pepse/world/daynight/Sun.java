@@ -9,6 +9,8 @@ import danogl.util.Vector2;
 
 import java.awt.Color;
 
+import java.util.function.UnaryOperator;
+
 /**
  * This class is responsible for creating the sun game object.
  *
@@ -20,7 +22,6 @@ public class Sun {
     // Private constants
     private static final float INITIAL_SUN_CYCLE_ANGLE = 0; /* The initial angle of the sun in the cycle. */
     private static final float FINAL_SUN_CYCLE_ANGLE = 360; /* The final angle of the sun in the cycle. */
-    private static final float TWO_THIRDS_FACTOR = 2 / 3f; /* The factor for two thirds. */
     private static final float HALF_FACTOR = 0.5f; /* The factor for half. */
     private static final String SUN_TAG = "sun"; /* The tag for the sun game object. */
     private static final Vector2 SUN_SIZE = Vector2.of(90, 90); /* The size of the sun game object. */
@@ -42,19 +43,22 @@ public class Sun {
      * </p>
      * @param windowDimensions The dimensions of the game window.
      * @param cycleLength The length of the sun cycle in seconds.
+     * @param sunHeight The height of the sun as a function of the sun's x coordinate.
      * @return The sun game object.
      */
-    public static GameObject create(Vector2 windowDimensions, float cycleLength) {
+    public static GameObject create(
+            Vector2 windowDimensions, float cycleLength, UnaryOperator<Float> sunHeight
+    ) {
         Renderable sunRenderer = new OvalRenderable(Color.YELLOW);
         GameObject sun = new GameObject(Vector2.ZERO, SUN_SIZE, sunRenderer);
 
         sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES); // Set sun to follow camera
         sun.setTag(SUN_TAG);
 
+        float sunX = windowDimensions.x() * HALF_FACTOR;
+
         Vector2 initialSunCenter = windowDimensions.mult(HALF_FACTOR);
-        Vector2 cycleCenter = Vector2.of(
-                windowDimensions.x() * HALF_FACTOR, windowDimensions.y() * TWO_THIRDS_FACTOR
-        );
+        Vector2 cycleCenter = Vector2.of(sunX, sunHeight.apply(sunX));
 
         new Transition<>( // Make the sun rotate around the center of the screen
                 sun,
