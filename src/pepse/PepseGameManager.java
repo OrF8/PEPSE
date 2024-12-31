@@ -128,7 +128,7 @@ public class PepseGameManager extends GameManager {
      */
     private void createSunAndHalo() {
         // Create the sun
-        GameObject sun = Sun.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE);
+        GameObject sun = Sun.create(windowDimensions, SECONDS_IN_A_DAY_CYCLE, terrain::groundHeightAt);
         gameObjects().addGameObject(sun, Layer.BACKGROUND);
         // Create its halo
         GameObject sunHalo = SunHalo.create(sun);
