@@ -228,6 +228,10 @@ public class Avatar extends GameObject {
     /**
      * Removes the specified component from the list of components activated when the avatar jumps.
      *
+     * <p>
+     *     Currently not in use, but may be useful in the future.
+     * </p>
+     *
      * @param component The component to be removed from the list of on-jump components.
      */
     public void removeOnJumpComponent(Component component) {

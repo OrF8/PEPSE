@@ -54,7 +54,6 @@ public class Cloud {
     private final BiConsumer<GameObject, Integer> removeFromGame;
 
     // Private fields
-    private float mostLeftX; /* The leftmost x coordinate of the entire cloud */
     private List<GameObject> cloud; /* The list of GameObject instances representing the cloud */
 
     /**
@@ -87,23 +86,23 @@ public class Cloud {
         );
         block.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         block.setTag(CLOUD_TAG);
-        if (mostLeftX == 0 || mostLeftX > block.getTopLeftCorner().x()) {
-            mostLeftX = block.getTopLeftCorner().x();
-        }
         // Handle the movement of a cloud block across the screen
         new Transition<>(
                 block,
-                column ->
-                        block.setCenter(
-                                Vector2.of(block.getCenter().x() + CLOUD_X_MOVEMENT, block.getCenter().y())
-                        ),
+                column -> {
+                    float newX = block.getCenter().x() + CLOUD_X_MOVEMENT;
+                    if (newX > maxX) { // Reset the block's position if it exceeds the maximum x-coordinate
+                        newX = startingX;
+                    }
+                    block.setCenter(Vector2.of(newX, block.getCenter().y()));
+                },
                 startingX,
                 maxX,
                 Transition.LINEAR_INTERPOLATOR_FLOAT,
-                /* Cloud will be deleted iff it exited the screen, so we let it move infinitely as long
+                /* Cloud will not be deleted if it exited the screen, so we let it move infinitely as long
                 as it didn't and the avatar is following it */
                 Float.POSITIVE_INFINITY,
-                Transition.TransitionType.TRANSITION_ONCE,
+                Transition.TransitionType.TRANSITION_LOOP,
                 null
         );
 
@@ -151,14 +150,6 @@ public class Cloud {
         }
         this.cloud = cloud;
         return cloud;
-    }
-
-    /**
-     * Returns the leftmost x coordinate of the entire cloud.
-     * @return the leftmost x coordinate for the entire cloud.
-     */
-    public float getMostLeftX() {
-        return mostLeftX;
     }
 
     /**
