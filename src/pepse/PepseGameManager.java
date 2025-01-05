@@ -3,7 +3,6 @@ package pepse;
 import danogl.GameManager;
 import danogl.GameObject;
 import danogl.collisions.Layer;
-import danogl.components.Component;
 import danogl.components.CoordinateSpace;
 import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
@@ -62,7 +61,6 @@ public class PepseGameManager extends GameManager {
     private Avatar avatar; /* The avatar of the game */
     private Vector2 windowDimensions; /* The dimensions of the game window */
     private List<Integer> layers; /* The layers that objects should be deleted from */
-    private Component rainPourComponent; /* The rain pour component */
 
     /**
      * Default constructor for the PepseGameManager.
@@ -220,24 +218,14 @@ public class PepseGameManager extends GameManager {
      */
     private void createCloud() {
         Cloud cloudCreator = new Cloud(gameObjects()::addGameObject, gameObjects()::removeGameObject);
-        // Create the jump component for the avatar to activate upon jumping
-        this.rainPourComponent = cloudCreator.pourRain();
         // List of blocks to create a cloud
         List<GameObject> cloud = cloudCreator.createInRange(0, (int) windowDimensions.x());
-        /* For each block, add to the game and remove the jump component from the avatar if the cloud left
-        the screen */
+        // For each block, add to the game
         for (GameObject cloudBlock : cloud) {
             gameObjects().addGameObject(cloudBlock, CLOUD_LAYER);
-            cloudBlock.addComponent(
-                    delta -> {
-                        if (cloudCreator.getMostLeftX() > windowDimensions.x()) {
-                            gameObjects().removeGameObject(cloudBlock, CLOUD_LAYER);
-                            avatar.removeOnJumpComponent(rainPourComponent);
-                        }
-                    }
-            );
         }
-        avatar.addOnJumpComponent(rainPourComponent);
+        // Add the jump component for the avatar to activate upon jumping
+        avatar.addOnJumpComponent(cloudCreator.pourRain());
     }
 
     /**
