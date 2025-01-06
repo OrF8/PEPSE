@@ -3,20 +3,20 @@ noam.kimhi,or_forshmit8
 
 --------------------------------------------------------------------------------------------------------------
 
-# QUESTION 1 - The classes in the package pepse.world.tree:
-
-We handled the creation of trees in the world using 3 classes with the following responsibilities:
-(*) Trunk - This class is responsible for creating the trunk of a tree at a given position. Defines the range
+# QUESTION 1 -
+The classes in the package pepse.world.tree:
+We handled the creation of trees in the world using four classes with the following responsibilities:
+(1) Trunk - This class is responsible for creating the trunk of a tree at a given position. Defines the range
             of trunk heights and decides the height of a tree on a random basis. This is a package private
             class.
 
-(*) Leaf - Responsible for creating a single leaf object in the game at a given position and color. This is
+(2) Leaf - Responsible for creating a single leaf object in the game at a given position and color. This is
            a package private class.
 
-(*) Fruit - Creates a collectable fruit that activates a consumer upon collision. This is a package private
+(3) Fruit - Creates a collectable fruit that activates a consumer upon collision. This is a package private
             class.
 
-(*) Flora - This class handles the logic behind generating trunks and their foliage and fruits. This is done
+(4) Flora - This class handles the logic behind generating trunks and their foliage and fruits. This is done
             by the method createInRange which gets a range of X positions to plant trees in. First, a trunk
             is positioned at a random X location based on a threshold. For each trunk the function creates
             flora - list of leaves and fruits that are also created on a random basis inside a grid around
@@ -26,42 +26,89 @@ We handled the creation of trees in the world using 3 classes with the following
             is public and can be accessed outside of tree package. This enhances encapsulation and single
             responsibility of each class in this package. (See Question 3 for more explanation).
 
---------------------------------------------------------------------------------------------------------------
-
-# QUESTION 2 - Relationships between classes in package pepse.world.tree:
-
-The trunk is not familiar with the concept of a leaf or a fruit, and neither do the leaf nor the fruit know
-about their trunk, the class Flora is responsible for the coordination between the components, and acts as a
-container for trunks and their foliage (leaves and fruits). The trunk, fruits and leaves do not take care of
-their own positioning inside the game, the entire logic of their placement is handled inside Flora class.
-
-Usage of callbacks:
-In order to create trunks at reasonable locations, we needed to get an idea of where the ground starts.
-We could potentially have Flora directly ask for groundHeightAt from the class Terrain, but this will
-further complicate the dependencies in the program where in fact Flora only needs a minor detail which
-does not require for it to know the entire class Terrain. Therefore, we decided to pass a callback from
-PepseGameManager to Flora, in order to let this class get the ground height without knowing what a Terrain is.
-That way, Flora can easily plant trunks at reasonable locations based on ground height.
-
-Fruits need to activate the avatar's energy regeneration method, so we made an override to the OnCollision
-method of fruits to activate the other object's method. Flora is responsible for passing the correct method
-to Fruit, that way fruits don't have to be familiar with the concept of an avatar, and still activate its
-method upon collision.
+The classes to implement cloud:
+(*) Cloud - the cloud is built of bricks (same technique we used with the terrain). There are 2 different
+            types of clouds, which are randomly generated upon each run.
+            (*) Raindrop - This is a nested class. Since an instance of a raindrop only makes sense inside the
+                limits of a cloud, we thought it is a great case to implement it as a nested class. Raindrops
+                are created randomly using a callback of pourRain(), which relates to the Avatar class (see
+                question 2).
 
 --------------------------------------------------------------------------------------------------------------
 
-# QUESTION 3 - Design Patterns we used in the package pepse.world.tree:
-In this package we used a Façade to ease the creation of flora in the game. This package is built out of
-four classes but only the class Flora is visible outside of the package. In this case, the user of the package
-is PepseGameManager, and instead of having to deal with the creation of trunks, leaves, fruits - it only has
-to call one public class - createInRange() which returns a data structure according to which the GameManager
-adds objects to the list game. As the manager of the game, PepseGameManager has to be aware that fruits exist
-because of their interaction with the avatar - but it doesn't have to take care of the logic behind their
-creation, and the same goes with trunks and leaves.
+# QUESTION 2 -
 
-Despite the same nature this exercise has as exercise 2, this time we did not use strategies as interfaces,
-but as callbacks. The entire logic behind collisions and behaviors upon activating them is handled by simple
-callbacks that are passed from the GameManager to the Flora class. This way, the Flora class can activate the
-correct method upon collision without having to know what the other object is.
+(*) Relationships between classes in package pepse.world.tree:
+
+    The trunk is not familiar with the concept of a leaf or a fruit, and neither do the leaf nor the fruit
+    know about their trunk, the class Flora is responsible for the coordination between the components, and
+    acts as a container for trunks and their foliage (leaves and fruits). The trunk, fruits and leaves do not
+    take care of their own positioning inside the game, the entire logic of their placement is handled inside
+    Flora class.
+
+    Usage of callbacks:
+    In order to create trunks at reasonable locations, we needed to get an idea of where the ground starts.
+    We could potentially have Flora directly ask for groundHeightAt from the class Terrain, but this will
+    further complicate the dependencies in the program where in fact Flora only needs a minor detail which
+    does not require for it to know the entire class Terrain. Therefore, we decided to pass a callback from
+    PepseGameManager to Flora, in order to let this class get the ground height without knowing what a Terrain
+    is. That way, Flora can easily plant trunks at reasonable locations based on ground height.
+
+    Fruits need to activate the avatar's energy regeneration method, so we made an override to the OnCollision
+    method of fruits to activate the other object's method. Flora is responsible for passing the correct
+    method to Fruit, that way fruits don't have to be familiar with the concept of an avatar, and still
+    activate its method upon collision.
+
+(*) Relationships with the class Cloud:
+    One of the main challenges was to find a way to activate a behavior of a cloud (pour rain) upon a jump of
+    the avatar. We chose to do so by having a list of components that shall be activated upon jumping, and the
+    avatar has a method to add/remove a component from this list. pourRain() returns the component that
+    creates raindrops, however the avatar does not have to deal with the creation of rain at all, and simply
+    calls the method without having to actually implement it himself, or know what the method does. This
+    allows the entire logic of pouring rain to stay inside the class Cloud, and that makes a lot more sense
+    design wise.
+
+--------------------------------------------------------------------------------------------------------------
+
+# QUESTION 3 -
+(*) Design Patterns we used in the package pepse.world.tree:
+    In this package we used a Façade to ease the creation of flora in the game. This package is built out of
+    four classes but only the class Flora is visible outside of the package. In this case, the user of the
+    package is PepseGameManager, and instead of having to deal with the creation of trunks, leaves, fruits -
+    it only has to call one public class - createInRange() which returns a data structure according to which
+    the GameManager adds objects to the list game. As the manager of the game, PepseGameManager has to be
+    aware that fruits exist because of their interaction with the avatar - but it doesn't have to take care of
+    the logic behind their creation, and the same goes with trunks and leaves.
+
+    The nature of this exercise is similar to that of exercise 2 (no pun intended), this time we did not use
+    strategies as interfaces, but as callbacks. The entire logic behind collisions and behaviors upon
+    activating them is handled by simple callbacks that are passed from the GameManager to the Flora class.
+    This way, the Flora class can activate the correct method upon collision without having to know what the
+    other object is.
+
+(*) Cloud & Avatar:
+    Observer design pattern - We used the observer design pattern to activate behaviors upon jumping.
+    The subject is the Avatar class - it has a list of observer objects (onJumpComponents), it can add or
+    remove observer objects (components) from that list, and it notifies the observers registered in that list
+    when a jump occurs. We built it such that future elements that will be added to the game will not require
+    additional changes in the Avatar class (nor in the classes related to it), in accordance with the "Open-
+    Closed" principle - leaving this class open for extensions, but close for modification.
+
+    The observer is the Component interface - it defines an updating interface for objects that should be
+    notified for changes in a subject, and in our case that a jump occurred.
+
+    The concrete observer is the Cloud class, and its component "pourRain" acts as the update that should
+    occur a desired event.
+
+(*) Decorator Design Pattern:
+    Many classes in our game wrap the GameObject class to add additional functionality to it. An example for
+    that is the class Fruit, wrapping a game object and adding the functionality of adding energy to the game
+    upon collision with another desired game object.
+
+(*) Façade Design Pattern:
+    Many objects such as Sun and SunHalo were built in a way that eases their creation and addition to the
+    game. Sun for example, is made of transition that loops around a center, and SunHalo follows it. However,
+    the user that creates these objects does not have to deal with any of these logics, because they are all
+    taken care of inside these classes, thereby simplifying their usage.
 
 --------------------------------------------------------------------------------------------------------------
