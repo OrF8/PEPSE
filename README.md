@@ -38,7 +38,7 @@ PEPSE/
      - Open IntelliJ IDEA.
      - Select "Open" and choose the `PEPSE` directory.
      - IntelliJ will detect the project structure and set it up accordingly.
-  - For Eclipse:​
+   - For Eclipse:​
      - Open Eclipse.
      - Select "File" > "Import" > "Existing Projects into Workspace".
      - Choose the PEPSE directory and click "Finish".
