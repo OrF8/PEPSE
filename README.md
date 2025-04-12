@@ -56,7 +56,7 @@ PEPSE/
 - All assets are created by Dan Nirel.
 
 # 📄 License
-This project is licensed under the MIT License – see the [**LICENSE**](https://github.com/OrF8/Bricker/blob/main/LICENSE) file for details
+This project is licensed under the MIT License – see the [**LICENSE**](https://github.com/OrF8/PEPSE/blob/main/LICENSE) file for details
 
 
 
