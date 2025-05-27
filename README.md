@@ -8,7 +8,7 @@ The project recieved a final grade of **100**.
 - **Procedural Terrain Generation**: Dynamically creates terrain as the player moves through the game world.
 - **Day-Night Cycle**: Implements a realistic day-night cycle affecting the game's lighting and ambiance.
 - **Interactive Entities**: Includes various entities such as avatars and obstacles that interact within the game environment.
-- **Physics Integration**: Incorporates physics-based mechanics for realistic movement and interactions
+- **Physics Integration**: Incorporates physics-based mechanics for realistic movement and interactions.
 
 🗂️ Project Structure
 ````
