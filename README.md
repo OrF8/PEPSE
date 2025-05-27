@@ -26,14 +26,14 @@ PEPSE/
 # 🛠️ Getting Started
 ## Prerequisites
 - Java Development Kit (JDK) 17 or higher
-- An Integrated Development Environment (IDE) such as IntelliJ IDEA or Eclipse
+- An Integrated Development Environment (IDE) such as IntelliJ IDEA or Eclipse (Optional).
 ## Installation
 1. Clone the repository:
    ````
    git clone https://github.com/OrF8/PEPSE.git
    cd PEPSE
    ````
-2. Import the project into your IDE:
+2. If using an IDE - Import the project into your IDE:
    - For IntelliJ IDEA:​
      - Open IntelliJ IDEA.
      - Select "Open" and choose the `PEPSE` directory.
@@ -42,7 +42,8 @@ PEPSE/
      - Open Eclipse.
      - Select "File" > "Import" > "Existing Projects into Workspace".
      - Choose the PEPSE directory and click "Finish".
-3. Build and run the project:
+3. Add DanoGameLab as a dependency (see [credits](https://github.com/OrF8/PEPSE/edit/main/README.md#credits).
+4. Build and run the project:
    - Ensure DanoGameLab is included in your classpath or set up as a library dependency.
    - Compile and run the `PepseGameManager.java` class to start the game.
 
