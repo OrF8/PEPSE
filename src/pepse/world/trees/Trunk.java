@@ -28,11 +28,9 @@ class Trunk {
     private static final Color BASE_TRUNK_COLOR = new Color(100, 50, 20);
 
     /**
-     * Constructs a new instance of the Trunk class.
-     * This constructor initializes the internal random number generator
-     * used for creating tree trunks with randomized characteristics, such as height.
+     * Private constructor to prevent instantiation of the Trunk class.
      */
-    Trunk() {}
+    private Trunk() {}
 
     /**
      * Creates a GameObject representing a tree trunk at the specified position.
@@ -46,7 +44,7 @@ class Trunk {
      *                 The trunk will extend upwards from this position.
      * @return A GameObject representing the created tree trunk with specified properties.
      */
-     GameObject create(Vector2 position) {
+     static GameObject create(Vector2 position) {
          Random random = new Random((long) position.x());
          float treeHeight = random.nextInt(MIN_TREE_HEIGHT, MAX_TREE_HEIGHT) * Block.SIZE;
          Vector2 topLeftCorner = Vector2.of(position.x(), position.y() - treeHeight);
