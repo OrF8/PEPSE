@@ -25,7 +25,7 @@ PEPSE/
 
 # 🛠️ Getting Started
 ## Prerequisites
-- Java Development Kit (JDK) 17 or higher
+- Java Development Kit (JDK) 24 or higher
 - An Integrated Development Environment (IDE) such as IntelliJ IDEA or Eclipse (Optional).
 ## Installation
 1. Clone the repository:
