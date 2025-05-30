@@ -2,7 +2,7 @@
 
 PEPSE is a Java-based 2D game developed by [**Noam Kimhi**](https://github.com/noam-kimhi) and [**Or Forshmit**](https://github.com/OrF8) as part of the course [**OOP**](https://shnaton.huji.ac.il/index.php/NewSyl/67125/2/2025/) at [**The Hebrew University of Jerusalem**](https://en.huji.ac.il/). \
 This project focuses on creating a side-scrolling game environment with procedurally generated terrain and interactive elements. \
-The project recieved a final grade of **100**.
+> 🎓 Final Grade: **100**
 
 # 🚀 Features
 - **Procedural Terrain Generation**: Dynamically creates terrain as the player moves through the game world.
