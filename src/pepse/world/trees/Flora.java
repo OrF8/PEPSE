@@ -35,9 +35,9 @@ public class Flora {
     public static final String FRUIT_TAG = "Fruit";
 
     // Private constants
-    private static final double TREE_PLANTING_THRESHOLD = 0.075; /* chance to plant a tree */
-    private static final double LEAF_PLACEMENT_THRESHOLD = 0.65; /* chance to place a leaf */
-    private static final double FRUIT_PLACEMENT_THRESHOLD = 0.05; /* chance to place a fruit */
+    private static final double TREE_PLANTING_THRESHOLD = 0.075; /* Probability to plant a tree */
+    private static final double LEAF_PLACEMENT_THRESHOLD = 0.65; /* Probability to place a leaf */
+    private static final double FRUIT_PLACEMENT_THRESHOLD = 0.05; /* Probability to place a fruit */
     private static final int FOLIAGE_HEIGHT = 8; /* Number of rows of leaves */
     private static final int FOLIAGE_WIDTH = 8; /* Number of columns of leaves */
     private static final int HALF_DIVISION_FACTOR = 2; /* Used for division by 2 */
@@ -46,7 +46,7 @@ public class Flora {
     // Private final fields
     private final float fruitRespawnCycleLength; /* Time in seconds for a fruit to respawn */
     private final int seed; /* Seed for random number generation */
-    private final UnaryOperator<Float> floatFunction; /* Function to calculate ground height */
+    private final UnaryOperator<Float> groundHeightAtX; /* Function to calculate ground height */
     private final Consumer<Double> fruitCollisionCallback; /* Callback for fruit collision */
 
     // Private fields
@@ -56,7 +56,7 @@ public class Flora {
      * Constructs a new Flora instance responsible for creating and managing
      * the placement of flora elements (trees, leaves and fruits) in a terrain.
      *
-     * @param floatFunction A function that calculates the ground height for a given
+     * @param groundHeightAtX A function that calculates the ground height for a given
      *                      x-coordinate, used to determine where flora should be placed.
      * @param fruitCollisionCallback A callback function to be called when a fruit collides with
      *                               another object.
@@ -70,13 +70,13 @@ public class Flora {
      * @param seed The seed used for random number generation.
      */
     public Flora(
-            UnaryOperator<Float> floatFunction,
+            UnaryOperator<Float> groundHeightAtX,
             Consumer<Double> fruitCollisionCallback,
             float fruitRespawnCycleLength, int seed
     ) {
         this.fruitRespawnCycleLength = fruitRespawnCycleLength;
         this.seed = seed;
-        this.floatFunction = floatFunction;
+        this.groundHeightAtX = groundHeightAtX;
         this.fruitCollisionCallback = fruitCollisionCallback;
         this.random = new Random();
     }
@@ -163,7 +163,6 @@ public class Flora {
      *         associated with that tree.
      */
     public Map<GameObject, List<GameObject>> createInRange(int minX, int maxX) {
-        Trunk trunkCreator = new Trunk();
         Map<GameObject, List<GameObject>> floraMap = new HashMap<>();
 
         // Calculate the position of trunks based on Block.SIZE to ensure alignment.
@@ -173,8 +172,8 @@ public class Flora {
         for (; trunkXPos < maxX; trunkXPos += Block.SIZE) { // Plant trees in the given range
             random.setSeed(Objects.hash(trunkXPos, seed));
             if (shouldPlantTree()) {
-                Vector2 trunkPosition = Vector2.of(trunkXPos, floatFunction.apply((float) trunkXPos));
-                GameObject trunk = trunkCreator.create(trunkPosition);
+                Vector2 trunkPosition = Vector2.of(trunkXPos, groundHeightAtX.apply((float) trunkXPos));
+                GameObject trunk = Trunk.create(trunkPosition);
                 floraMap.put(trunk, createFoliage(trunkXPos, (int)trunk.getTopLeftCorner().y()));
             }
         }

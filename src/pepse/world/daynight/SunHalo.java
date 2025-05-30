@@ -27,11 +27,9 @@ public class SunHalo {
     private static final Color BASIC_HALO_COLOR = new Color(255, 255, 0, 20);
 
     /**
-     * Default constructor for the SunHalo class.
-     * It initializes a new instance of the SunHalo class.
-     * This class is responsible for creating a visual halo effect around the sun.
+     * Private constructor to prevent instantiation of this utility class.
      */
-    public SunHalo() {}
+    private SunHalo() {}
 
     /**
      * Creates a sun halo game object.

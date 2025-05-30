@@ -176,7 +176,7 @@ public class PepseGameManager extends GameManager {
 
         // Add a component to the display such that at update() the energy amount will be updated.
         energyDisplay.addComponent(
-                deltaTime -> energyTextRenderable.setString(Math.round(avatar.getEnergy()) + PERCENT)
+                _ -> energyTextRenderable.setString(Math.round(avatar.getEnergy()) + PERCENT)
         );
     }
 

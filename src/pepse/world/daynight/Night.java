@@ -26,10 +26,9 @@ public class Night {
     private static final String NIGHT = "night"; /* The tag for the night object */
 
     /**
-     * Creates a new instance of the Night class.
-     * This constructor initializes an empty Night object with no additional properties or behavior.
+     * A private constructor to prevent instantiation of the Night class.
      */
-    public Night() {}
+    private Night() {}
 
     /**
      * Creates a night object that cycles between day and night.
