@@ -21,11 +21,9 @@ public class Sky {
     private static final Color BASIC_SKY_COLOR = Color.decode("#80C6E5"); /* The base color of the sky. */
 
     /**
-     * Default constructor for the Sky class.
-     * Initializes an instance of the Sky class, which is responsible for managing
-     * the creation of the sky GameObject that covers the entire game window.
+     * Private constructor to prevent instantiation.
      */
-    public Sky() {}
+    private Sky() {}
 
     /**
      * Creates a sky GameObject.

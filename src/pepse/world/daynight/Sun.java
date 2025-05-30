@@ -27,12 +27,9 @@ public class Sun {
     private static final Vector2 SUN_SIZE = Vector2.of(90, 90); /* The size of the sun game object. */
 
     /**
-     * Default constructor for the Sun class.
-     * This constructor initializes a new instance of the Sun class.
-     * The Sun class is responsible for creating the sun game object that moves
-     * in a circular path as part of the game's visual and dynamic elements.
+     * A private constructor to prevent instantiation of this utility class.
      */
-    public Sun() {}
+    private Sun() {}
 
     /**
      * Creates a sun game object.
