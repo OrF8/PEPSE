@@ -35,16 +35,16 @@ public class Cloud {
     private static final Color BASE_CLOUD_COLOR = new Color(255, 255, 255);
 
     // 2 variations of cloud shapes
-    private static final List<List<Integer>> blockPositionsCloudOne = List.of( /* Cloud shape 1 - (4x11) */
-            List.of(0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0),
-            List.of(1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1),
-            List.of(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-            List.of(0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+    private static final List<List<Boolean>> blockPositionsCloudOne = List.of( /* Cloud shape 1 - (4x11) */
+            List.of(false, true, true, false, false, false, true, true, true, true, false),
+            List.of(true, true, true, true, false, true, true, true, true, true, true),
+            List.of(true, true, true, true, true, true, true, true, true, true, true),
+            List.of(false, true, true, true, true, true, true, true, true, true, false)
     );
-    private static final List<List<Integer>> blockPositionsCloudTwo = List.of( /* Cloud shape 2 - (3x8) */
-            List.of(0, 0, 0, 1, 1, 1, 0, 0),
-            List.of(0, 1, 1, 1, 1, 1, 1, 0),
-            List.of(1, 1, 1, 1, 1, 1, 1, 1)
+    private static final List<List<Boolean>> blockPositionsCloudTwo = List.of( /* Cloud shape 2 - (3x8) */
+            List.of(false, false, false, true, true, true, false, false),
+            List.of(false, true, true, true, true, true, true, false),
+            List.of(true, true, true, true, true, true, true, true)
     );
 
     // Private final field
@@ -86,10 +86,11 @@ public class Cloud {
         );
         block.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         block.setTag(CLOUD_TAG);
+
         // Handle the movement of a cloud block across the screen
         new Transition<>(
                 block,
-                column -> {
+                _ -> {
                     float newX = block.getCenter().x() + CLOUD_X_MOVEMENT;
                     if (newX > maxX) { // Reset the block's position if it exceeds the maximum x-coordinate
                         newX = startingX;
@@ -110,6 +111,33 @@ public class Cloud {
     }
 
     /**
+     * Creates a cloud by iterating through the provided block positions
+     * and generating GameObject instances for each block.
+     *
+     * @param blockPositions A list of lists representing the positions of blocks in the cloud.
+     * @param startingX The starting X-coordinate for the cloud's position.
+     * @param maxX The maximum X-coordinate the cloud can be in.
+     */
+    private void createCloud(List<List<Boolean>> blockPositions, int startingX, int maxX) {
+        // Create cloud blocks according to the blockPositions list
+        for (int row = 0; row < blockPositions.size(); row++) {
+            for (int col = 0; col < blockPositions.get(row).size(); col++) {
+                if (blockPositions.get(row).get(col)) { // If the position is true, create a block
+                    // Create the cloud block and add it to the game
+                    GameObject cloudBlock = createCloudBlock(
+                            Vector2.of(
+                                    startingX + col * Block.SIZE,
+                                    BASE_CLOUD_HEIGHT + row * Block.SIZE
+                            ),
+                            startingX, maxX
+                    );
+                    cloud.add(cloudBlock);
+                }
+            }
+        }
+    }
+
+    /**
      * Creates and returns a list of GameObject instances representing
      * a cloud within the specified X-coordinate range.
      * <p>
@@ -124,31 +152,16 @@ public class Cloud {
     public List<GameObject> createInRange(int minX, int maxX) {
         boolean cloudOne = new Random().nextBoolean();
         // Decide which cloud shape to create
-        List<List<Integer>> blockPositions = cloudOne ? blockPositionsCloudOne : blockPositionsCloudTwo;
+        List<List<Boolean>> blockPositions = cloudOne ? blockPositionsCloudOne : blockPositionsCloudTwo;
+        int cloudWidth = blockPositions.getFirst().size() * Block.SIZE;
         // Set up a starting and ending X position for the cloud
-        int startingX = LocationCalculator.getClosestMultToBlockSize(minX) -
-                        Block.SIZE * blockPositions.get(0).size();
-        maxX = LocationCalculator.getClosestMultToBlockSize(maxX) +
-               Block.SIZE * blockPositions.get(0).size();
-        List<GameObject> cloud = new ArrayList<>();
+        int startingX = LocationCalculator.getClosestMultToBlockSize(minX) - cloudWidth;
+        maxX = LocationCalculator.getClosestMultToBlockSize(maxX) + cloudWidth;
 
-        // Create cloud blocks according to the blockPositions list
-        for (int row = 0; row < blockPositions.size(); row++) {
-            for (int col = 0; col < blockPositions.get(row).size(); col++) {
-                if (blockPositions.get(row).get(col) == 1) {
-                    // Create the cloud block and add it to the game
-                    GameObject cloudBlock = createCloudBlock(
-                            Vector2.of(
-                                    startingX + col * Block.SIZE,
-                                    BASE_CLOUD_HEIGHT + row * Block.SIZE
-                            ),
-                            startingX, maxX
-                    );
-                    cloud.add(cloudBlock);
-                }
-            }
-        }
-        this.cloud = cloud;
+        this.cloud = new ArrayList<>();
+
+        createCloud(blockPositions, startingX, maxX);
+
         return cloud;
     }
 
@@ -229,14 +242,15 @@ public class Cloud {
                 BiConsumer<GameObject, Integer> removeFromGame
         ) {
             super(
-                    topLeftCorner, Vector2.ONES.mult(SIZE),
+                    topLeftCorner,
+                    Vector2.ONES.mult(SIZE),
                     new RectangleRenderable(RAIN_COLOR)
             );
+
             transform().setAccelerationY(GRAVITY); // Set raindrop's gravity
             this.setTag(RAIN_DROP_TAG); // Set raindrop's tag
             addToGame.accept(this, Layer.BACKGROUND); // Add the raindrop to the game
-            this.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES
-            );
+            this.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
 
             // Handle the change in opaqueness. Upon reaching final value, remove from the game
             new Transition<>(

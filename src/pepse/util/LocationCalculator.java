@@ -20,6 +20,7 @@ public final class LocationCalculator {
 
     /**
      * Returns the closest (smaller) multiple of the block size to the given number.
+     *
      * <p>
      * This method is used to ensure that the blocks and trunks are created in
      * multiples of the block size.
@@ -31,8 +32,8 @@ public final class LocationCalculator {
      *
      * @see Block#SIZE
      */
-    public static int getClosestMultToBlockSize(int num) {
-        return (int) Math.floor((double) num / Block.SIZE) * Block.SIZE;
+    public static int getClosestMultToBlockSize(float num) {
+        return (int) Math.floor(num / Block.SIZE) * Block.SIZE;
     }
 
 }

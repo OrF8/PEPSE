@@ -31,8 +31,12 @@ public class Avatar extends GameObject {
      */
     public static final String AVATAR_TAG = "avatar";
 
+    /**
+     * The maximum energy value of the avatar.
+     */
+    public static final int MAX_ENERGY_VALUE = 100;
+
     // Private constants
-    private static final int MAX_ENERGY_VALUE = 100; /* The maximum energy value of the avatar */
     private static final int JUMP_ENERGY_CONSUMPTION = 10; /* The energy consumed when the avatar jumps */
     /* The rate at which the avatar's energy is regenerated */
     private static final int IDLE_ENERGY_REGENERATION_RATE = 1;

@@ -6,6 +6,7 @@ import danogl.components.Transition;
 import danogl.gui.rendering.OvalRenderable;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
+import pepse.util.MathConstants;
 
 import java.awt.Color;
 
@@ -22,7 +23,6 @@ public class Sun {
     // Private constants
     private static final float INITIAL_SUN_CYCLE_ANGLE = 0; /* The initial angle of the sun in the cycle. */
     private static final float FINAL_SUN_CYCLE_ANGLE = 360; /* The final angle of the sun in the cycle. */
-    private static final float HALF_FACTOR = 0.5f; /* The factor for half. */
     private static final String SUN_TAG = "sun"; /* The tag for the sun game object. */
     private static final Vector2 SUN_SIZE = Vector2.of(90, 90); /* The size of the sun game object. */
 
@@ -52,9 +52,9 @@ public class Sun {
         sun.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES); // Set sun to follow camera
         sun.setTag(SUN_TAG);
 
-        float sunX = windowDimensions.x() * HALF_FACTOR;
+        float sunX = windowDimensions.x() * MathConstants.HALF_FACTOR;
 
-        Vector2 initialSunCenter = windowDimensions.mult(HALF_FACTOR);
+        Vector2 initialSunCenter = windowDimensions.mult(MathConstants.HALF_FACTOR);
         Vector2 cycleCenter = Vector2.of(sunX, sunHeight.apply(sunX));
 
         new Transition<>( // Make the sun rotate around the center of the screen
