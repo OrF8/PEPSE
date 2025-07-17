@@ -5,7 +5,7 @@ import java.util.Random;
 
 /**
  * Provides procedurally generated colors around a pivot.
- * @author Dan Nirel
+ * @author Dan Nirel, Modifications by Noam Kimhi and Or Forshmit
  */
 public final class ColorSupplier {
 
@@ -67,11 +67,15 @@ public final class ColorSupplier {
      * @return A color similar to baseColor.
      */
     public static Color approximateColor(Color baseColor, int colorDelta) {
+        int red = baseColor.getRed();
+        int green = baseColor.getGreen();
+        int blue = baseColor.getBlue();
 
         return new Color(
-                randomChannelInRange(baseColor.getRed()-colorDelta, baseColor.getRed()+colorDelta),
-                randomChannelInRange(baseColor.getGreen()-colorDelta, baseColor.getGreen()+colorDelta),
-                randomChannelInRange(baseColor.getBlue()-colorDelta, baseColor.getBlue()+colorDelta));
+                randomChannelInRange(red - colorDelta, red + colorDelta),
+                randomChannelInRange(green - colorDelta, green + colorDelta),
+                randomChannelInRange(blue - colorDelta, blue + colorDelta)
+        );
     }
 
     /**
@@ -82,7 +86,7 @@ public final class ColorSupplier {
      * @return A random number in the range [min, max], clipped to [0,255].
      */
     private static int randomChannelInRange(int min, int max) {
-        int channel = random.nextInt(max-min+1) + min;
+        int channel = random.nextInt(max - min + 1) + min;
         return Math.min(255, Math.max(channel, 0));
     }
 }

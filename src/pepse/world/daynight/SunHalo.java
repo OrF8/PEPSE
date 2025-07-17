@@ -38,14 +38,16 @@ public class SunHalo {
      */
     public static GameObject create(GameObject sun) {
         GameObject sunHalo = new GameObject(
-                sun.getTopLeftCorner(), sun.getDimensions().mult(SUN_HALO_FACTOR),
-                new OvalRenderable(BASIC_HALO_COLOR));
+                sun.getTopLeftCorner(),
+                sun.getDimensions().mult(SUN_HALO_FACTOR),
+                new OvalRenderable(BASIC_HALO_COLOR)
+        );
         sunHalo.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         sunHalo.setTag(SUN_HALO_TAG);
 
         // Make the halo follow the sun rotation
         sunHalo.addComponent(
-                deltaTime -> sunHalo.setCenter(sun.getCenter())
+                _ -> sunHalo.setCenter(sun.getCenter())
         );
         return sunHalo;
     }
