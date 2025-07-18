@@ -75,13 +75,14 @@ public class Terrain {
         // Add blocks at increasing X positions to the list
         for (int x = startX; x < maxX; x += Block.SIZE) {
 
-            float y = (float) Math.floor(groundHeightAt(x) / Block.SIZE) * Block.SIZE;
+            float y = (float) LocationCalculator.getClosestMultToBlockSize(groundHeightAt(x));
 
             for (int i = 0; i < TERRAIN_DEPTH; i++) {
 
                 Renderable blockRenderer = new RectangleRenderable(
+                        // Create a rectangle with approximate color
                         ColorSupplier.approximateColor(BASE_GROUND_COLOR)
-                ); // Create a rectangle with approximate color
+                );
 
                 Block block = new Block(Vector2.of(x, y + i * Block.SIZE), blockRenderer);
                 block.setTag(BLOCK_TAG); // set block tag to "ground"

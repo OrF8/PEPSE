@@ -45,8 +45,9 @@ public class PepseGameManager extends GameManager {
     private static final float AVATAR_Y_POS_OFFSET = 100; /* The offset of the avatar from the ground */
     private static final float AVATAR_X_POS_RATIO = 2; /* The ratio of the avatar's x position */
     private static final float OFFSET = 150; /* The offset for the out of window threshold */
-    private static final String INITIAL_ENERGY_STRING = "100%"; /* The initial energy string */
     private static final String PERCENT = "%"; /* The percent sign */
+    /* The initial energy string */
+    private static final String INITIAL_ENERGY_STRING = Avatar.MAX_ENERGY_VALUE + PERCENT;
     private static final String TITLE = "Ghosty PEPSENautics - The Game"; /* The title of the game :) */
     /* The top left corner of the energy display */
     private static final Vector2 ENERGY_DISPLAY_TOP_LEFT_CORNER = Vector2.of(10, 20);
@@ -192,7 +193,7 @@ public class PepseGameManager extends GameManager {
      * @param rangeEnd The end of the range to create the flora.
      */
     private void createFlora(int rangeStart, int rangeEnd) {
-        // Create a map that maps trunks to its flora
+        // Create a map that maps trunks to its fruits and foliage
         Map<GameObject, List<GameObject>> trees = flora.createInRange(rangeStart, rangeEnd);
         // Add each trunk to the game.
         for (GameObject trunk : trees.keySet()) {
@@ -218,13 +219,13 @@ public class PepseGameManager extends GameManager {
      */
     private void createCloud() {
         Cloud cloudCreator = new Cloud(gameObjects()::addGameObject, gameObjects()::removeGameObject);
-        // List of blocks to create a cloud
+        // List of blocks that together make up the cloud
         List<GameObject> cloud = cloudCreator.createInRange(0, (int) windowDimensions.x());
-        // For each block, add to the game
+        // Add each block of the cloud to the game objects
         for (GameObject cloudBlock : cloud) {
             gameObjects().addGameObject(cloudBlock, CLOUD_LAYER);
         }
-        // Add the jump component for the avatar to activate upon jumping
+        // Add the jump component (pouring rain) for the avatar to activate upon jumping
         avatar.addOnJumpComponent(cloudCreator.pourRain());
     }
 
@@ -243,11 +244,11 @@ public class PepseGameManager extends GameManager {
      */
     private void initGameObjects(UserInputListener inputListener, ImageReader imageReader) {
         this.terrain = new Terrain(windowDimensions, seed); // create terrain
-        createSky(); // create sky
-        createNight(); // create night
-        createSunAndHalo(); // create sun and halo
-        createAvatar(inputListener, imageReader); // create avatar
-        // Create flora
+        createSky(); // Create the sky
+        createNight(); // Create the night
+        createSunAndHalo(); // Create the sun and its halo
+        createAvatar(inputListener, imageReader); // create the avatar
+        // Create the flora
         this.flora = new Flora(terrain::groundHeightAt, avatar::addEnergy, SECONDS_IN_A_DAY_CYCLE, seed);
         createEnergyDisplay(); // create energy display
         createCloud(); // create the cloud
@@ -273,6 +274,7 @@ public class PepseGameManager extends GameManager {
                 // Try to remove the object from each layer (will do nothing if the layer is wrong)
                 for (int layer : layers) {
                     if (gameObjects().removeGameObject(gameObject, layer)) {
+                        // If the object was removed, break out of the loop for better performance
                         break;
                     }
                 }
@@ -288,9 +290,11 @@ public class PepseGameManager extends GameManager {
     private void createObjectsInScreen() {
         int avatarX = (int) avatar.getCenter().x();
         int creationField = (int) (windowDimensions.x() / AVATAR_X_POS_RATIO + OFFSET);
+        int rangeStart = avatarX - creationField;
+        int rangeEnd = avatarX + creationField;
         // Create terrain and flora in the given range
-        createTerrain(avatarX - creationField, avatarX + creationField);
-        createFlora(avatarX - creationField, avatarX + creationField);
+        createTerrain(rangeStart, rangeEnd);
+        createFlora(rangeStart, rangeEnd);
     }
 
     /**
@@ -324,7 +328,10 @@ public class PepseGameManager extends GameManager {
             WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
         this.windowDimensions = windowController.getWindowDimensions();
+        // Since we want objects to be created only when they are in the screen,
+        // we set the out of window threshold to be the width of the window.
         this.outOfWindowThreshold = windowDimensions.x();
+        // Set a random seed for the game to ensure different game experiences on each run.
         this.seed = new Random().nextInt();
         this.layers = List.of(Layer.STATIC_OBJECTS, LEAF_LAYER, Layer.DEFAULT);
         initGameObjects(inputListener, imageReader);

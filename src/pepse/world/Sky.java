@@ -18,7 +18,8 @@ public class Sky {
 
     // Private constants
     private static final String SKY_TAG = "sky"; /* The tag of the sky GameObject. */
-    private static final Color BASIC_SKY_COLOR = Color.decode("#80C6E5"); /* The base color of the sky. */
+    /* The base color of the sky - 0x80C6E5 */
+    private static final Color BASIC_SKY_COLOR = new Color(128, 198, 229);
 
     /**
      * Private constructor to prevent instantiation.

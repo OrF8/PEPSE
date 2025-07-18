@@ -3,6 +3,7 @@ package pepse.world.trees;
 import danogl.GameObject;
 import danogl.util.Vector2;
 import pepse.util.LocationCalculator;
+import pepse.util.MathConstants;
 import pepse.world.Block;
 
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ public class Flora {
     private static final double FRUIT_PLACEMENT_THRESHOLD = 0.05; /* Probability to place a fruit */
     private static final int FOLIAGE_HEIGHT = 8; /* Number of rows of leaves */
     private static final int FOLIAGE_WIDTH = 8; /* Number of columns of leaves */
-    private static final int HALF_DIVISION_FACTOR = 2; /* Used for division by 2 */
 
 
     // Private final fields
@@ -57,7 +57,7 @@ public class Flora {
      * the placement of flora elements (trees, leaves and fruits) in a terrain.
      *
      * @param groundHeightAtX A function that calculates the ground height for a given
-     *                      x-coordinate, used to determine where flora should be placed.
+     *                        x-coordinate, used to determine where flora should be placed.
      * @param fruitCollisionCallback A callback function to be called when a fruit collides with
      *                               another object.
      *                               The function should accept a double representing the x-coordinate
@@ -112,6 +112,35 @@ public class Flora {
     }
 
     /**
+     * Places a leaf or fruit at the specified position based on certain conditions.
+     * <p>
+     *     This method checks whether a leaf should be added based on a threshold.
+     *     If a leaf is added, it creates a new Leaf object at the specified position.
+     * </p>
+     * <p>
+     *     If a leaf is not added, it checks if a fruit should be placed based on the trunk's x-coordinate.
+     *     If so, it creates a new Fruit object at the specified position.
+     * </p>
+     * @param foliage The list of foliage (leaves and fruits) to which the new object will be added.
+     * @param topLeftCorner The top-left corner position where the leaf or fruit will be placed.
+     * @param trunkXPos The x-coordinate position of the tree trunk,
+     *                  used to determine if a fruit should be placed.
+     * @param objX The x-coordinate position of the object being placed,
+     */
+    private void placeLeafOrFruit(
+         List<GameObject> foliage, Vector2 topLeftCorner, int trunkXPos, int objX
+    ) {
+        if (shouldAddLeaf()) { // Add the leaf to the leave list.
+            Leaf leafCreator = new Leaf();
+            GameObject leaf = leafCreator.create(topLeftCorner);
+            foliage.add(leaf);
+        } else if (shouldAddFruit(trunkXPos, objX)) { // Add a fruit if a leaf was not added.
+            Fruit fruit = new Fruit(topLeftCorner, fruitCollisionCallback, fruitRespawnCycleLength);
+            foliage.add(fruit);
+        }
+    }
+
+    /**
      * Creates foliage (a list of leaves and fruits) for a trunk starting at a specified trunk position.
      * <p>
      *      The method generates an arrangement of leaves and fruits around the trunk based on
@@ -125,24 +154,18 @@ public class Flora {
      */
     private List<GameObject> createFoliage(int trunkXPos, int trunkYPos) {
         List<GameObject> foliage = new ArrayList<>();
-        int startingObjY = trunkYPos - FOLIAGE_HEIGHT / HALF_DIVISION_FACTOR * Block.SIZE;
+        int startingObjY = trunkYPos - (int) (FOLIAGE_HEIGHT * MathConstants.HALF_FACTOR) * Block.SIZE;
         // Create foliage in a grid of size (FOLIAGE_HEIGHT x FOLIAGE_WIDTH).
         for (int row = 0, objY = startingObjY; row < FOLIAGE_HEIGHT; row++, objY += Block.SIZE) {
             int startingObjX = trunkXPos -
-                               (FOLIAGE_WIDTH / HALF_DIVISION_FACTOR * Block.SIZE) -
-                               (Block.SIZE / HALF_DIVISION_FACTOR);
+                               (int) (FOLIAGE_WIDTH * MathConstants.HALF_FACTOR * Block.SIZE) -
+                               (int) (Block.SIZE * MathConstants.HALF_FACTOR);
             // For each row of leaves, place a leaf at increasing X positions based on shouldAddLeaf's result.
             for (int col = 0, objX = startingObjX; col < FOLIAGE_WIDTH; col++, objX += Block.SIZE) {
-                Vector2 topLeftCorner = Vector2.of(objX, objY);
+                // Set the random seed based on the current position and the seed provided,
+                // to ensure consistent "random" behavior for each position.
                 random.setSeed(Objects.hash(objX, objY, seed));
-                if (shouldAddLeaf()) { // Add the leaf to the leave list.
-                    Leaf leafCreator = new Leaf();
-                    GameObject leaf = leafCreator.create(topLeftCorner);
-                    foliage.add(leaf);
-                } else if (shouldAddFruit(trunkXPos, objX)) { // Add a fruit if a leaf was not added.
-                    Fruit fruit = new Fruit(topLeftCorner, fruitCollisionCallback, fruitRespawnCycleLength);
-                    foliage.add(fruit);
-                }
+                placeLeafOrFruit(foliage, Vector2.of(objX, objY), trunkXPos, objX);
             }
         }
         return foliage;
@@ -170,11 +193,15 @@ public class Flora {
         maxX = LocationCalculator.getClosestMultToBlockSize(maxX);
 
         for (; trunkXPos < maxX; trunkXPos += Block.SIZE) { // Plant trees in the given range
+            // Set the random seed based on the trunk position and the seed provided,
+            // to ensure consistent "random" behavior for each trunk position.
             random.setSeed(Objects.hash(trunkXPos, seed));
             if (shouldPlantTree()) {
                 Vector2 trunkPosition = Vector2.of(trunkXPos, groundHeightAtX.apply((float) trunkXPos));
+                // Create a trunk at the calculated position.
                 GameObject trunk = Trunk.create(trunkPosition);
-                floraMap.put(trunk, createFoliage(trunkXPos, (int)trunk.getTopLeftCorner().y()));
+                // Create foliage for the trunk and add it to the map.
+                floraMap.put(trunk, createFoliage(trunkXPos, (int) trunk.getTopLeftCorner().y()));
             }
         }
 
