@@ -30,7 +30,7 @@ class Fruit extends GameObject {
 
     // Private fields
     /* The time interval (in seconds)
-    after which the fruit should reappear following a collision or disappearance. */
+       after which the fruit should reappear following a collision or disappearance. */
     private final float respawnCycleLength;
     /* The action to perform when the fruit collides with an avatar. */
     private final Consumer<Double> collisionAction;
@@ -72,8 +72,10 @@ class Fruit extends GameObject {
         this.renderer().setRenderable(null);
         // Make the fruit respawn after respawnCycleLength time has elapsed.
         new ScheduledTask(
-                this, this.respawnCycleLength,
-                false, () -> this.renderer().setRenderable(fruitRenderable)
-            );
+                this,
+                this.respawnCycleLength,
+                false,
+                () -> this.renderer().setRenderable(fruitRenderable)
+        );
     }
 }

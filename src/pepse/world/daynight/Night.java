@@ -5,6 +5,7 @@ import danogl.components.CoordinateSpace;
 import danogl.components.Transition;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.util.Vector2;
+import pepse.util.MathConstants;
 
 import java.awt.Color;
 
@@ -22,7 +23,6 @@ public class Night {
     // Private constants
     private static final float MIDNIGHT_OPACITY = 0.5f; /* The opacity of the middle of the night */
     private static final float DAY_OPACITY = 0; /* The opacity of the middle of the day */
-    private static final float HALF_FACTOR = 0.5f; /* The factor to divide the cycle length by */
     private static final String NIGHT = "night"; /* The tag for the night object */
 
     /**
@@ -53,7 +53,7 @@ public class Night {
                 DAY_OPACITY,
                 MIDNIGHT_OPACITY,
                 Transition.CUBIC_INTERPOLATOR_FLOAT,
-                cycleLength * HALF_FACTOR,
+                cycleLength * MathConstants.HALF_FACTOR,
                 Transition.TransitionType.TRANSITION_BACK_AND_FORTH,
                 null
         );
